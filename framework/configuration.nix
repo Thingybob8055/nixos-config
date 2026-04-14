@@ -210,7 +210,6 @@
      kitty
      zsh
      neovim
-     git
      xdg-desktop-portal-gnome
      fprintd
      libfprint

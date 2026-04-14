@@ -149,6 +149,15 @@
     package = pkgs.vscode.fhs;
   };
   
+  programs.git = {
+      enable = true;
+      settings = {
+        user.name = "Akshay Gopinath";
+        user.email = "akshay8055.007@gmail.com";
+      };
+    };
+
+  
   imports = [
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
     inputs.spicetify-nix.homeManagerModules.default
