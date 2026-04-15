@@ -41,6 +41,20 @@
     yabridge
     yabridgectl
     dxvk
+    vesktop
+    
+    (writeShellScriptBin "vesktop-themed" ''
+      THEME=$(gsettings get org.gnome.desktop.interface color-scheme)
+
+     unset ELECTRON_OZONE_PLATFORM_HINT
+     unset NIXOS_OZONE_WL
+
+     if [[ "$THEME" == *"prefer-dark"* ]]; then
+        GTK_THEME=Adwaita:dark vesktop --ozone-platform=x11
+    else
+      GTK_THEME=Adwaita vesktop --ozone-platform=x11
+   fi
+   '')
     
     (writeShellScriptBin "moises" ''
     THEME=$(gsettings get org.gnome.desktop.interface color-scheme)
@@ -92,6 +106,16 @@
     icon = "/home/akshay/AppImages/.icons/moises";  # Adjust icon path as needed
     startupNotify = true;
   };
+  
+  xdg.desktopEntries.vesktop = {
+    name = "Vesktop";
+    comment = "Discord with proper GNOME theming";
+    exec = "vesktop-themed";
+    icon = "${pkgs.vesktop}/share/icons/hicolor/256x256/apps/vesktop.png";
+    terminal = false;
+    categories = [ "Network" "Chat" ];
+    startupNotify = true;
+ };
 
   home.sessionPath = [ "/home/akshay/.local/share/yabridge" ];
 
