@@ -97,7 +97,8 @@
   services.displayManager.gdm.wayland = true;
   
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  #xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
   
   
   #programs.dconf.profiles.user.databases = [
@@ -214,6 +215,7 @@
      fprintd
      libfprint
      usbutils
+     pulseaudio
   ];
   
   environment.shells = with pkgs; [ zsh ];
