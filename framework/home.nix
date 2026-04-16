@@ -25,7 +25,7 @@
     reaper
     libreoffice
     discord
-    #spotify
+    spotify
     rustc
     unityhub
     steam
@@ -54,6 +54,14 @@
     else
       GTK_THEME=Adwaita vesktop --ozone-platform=x11
    fi
+   '')
+   
+   (writeShellScriptBin "spotify-xwayland" ''
+      THEME=$(gsettings get org.gnome.desktop.interface color-scheme)
+
+     unset ELECTRON_OZONE_PLATFORM_HINT
+     unset NIXOS_OZONE_WL
+     spotify --ozone-platform=x11
    '')
     
     (writeShellScriptBin "moises" ''
@@ -115,6 +123,16 @@
     icon = "${pkgs.vesktop}/share/icons/hicolor/256x256/apps/vesktop.png";
     terminal = false;
     categories = [ "Network" "Chat" ];
+    startupNotify = true;
+ };
+ 
+ xdg.desktopEntries.spotify = {
+    name = "Spotify";
+    comment = "Spotify";
+    exec = "spotify-xwayland %U";
+    icon = "${pkgs.spotify}/share/icons/hicolor/256x256/apps/spotify-client.png";
+    terminal = false;
+    categories = [ "Audio" "Music" "Audio" "AudioVideo"];
     startupNotify = true;
  };
 
@@ -199,7 +217,7 @@
   
   imports = [
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
-    inputs.spicetify-nix.homeManagerModules.default
+    #inputs.spicetify-nix.homeManagerModules.default
     ../user/app/flatpak.nix
   ];
   
@@ -277,6 +295,8 @@
           "<Super>q"
           "<Alt>F4"
         ];
+        
+        switch-input-source = ["XF86Keyboard"];
 
         move-to-monitor-left =  [ "<Super><Shift><Control>Left" ];
         move-to-monitor-right = [ "<Super><Shift><Control>Right" ];
@@ -333,6 +353,8 @@
           switch-to-application-7 = [ "@as []" ];
           switch-to-application-8 = [ "@as []" ];
           switch-to-application-9 = [ "@as []" ];
+          toggle-quick-settings = [ "@as []" ];
+          toggle-message-tray = [ "<Super>v" ];
        };
 
      "org/gnome/shell/extensions/forge/keybindings" = {
@@ -362,6 +384,10 @@
      "org/gnome/shell/extensions/pop-shell" = {
           hint-color-rgba = "rgba(110, 147, 204, 1)";
           #active-hint-border-radius = 17;
+     };
+     
+     "org/gnome/shell/extensions/search-light" = {
+          shortcut-search = ["<Super>space"];
      };
  
    ################### KEY BINDS FOR TILING ######################
@@ -402,14 +428,14 @@
     };
   };
 
-  programs.spicetify =
-  let
-    spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  in
-  {
-    enable = true;
-    wayland = false;
-  };
+  #programs.spicetify =
+  #let
+  #  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  #in
+  #{
+  #  enable = true;
+  #  wayland = false;
+  #};
   
   programs.zsh =
   let
