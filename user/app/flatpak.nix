@@ -26,6 +26,7 @@
   "org.gnome.meld"
   "org.qbittorrent.qBittorrent"
   "it.mijorus.gearlever"
+  "com.github.flxzt.rnote"
   ];
   
   # Configuration file for Spotify flags

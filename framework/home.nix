@@ -78,6 +78,7 @@
     gnomeExtensions.space-bar
     gnomeExtensions.mosaic
     gnomeExtensions.launch-new-instance
+    gnomeExtensions.pop-shell
     
     pkgs-stable.nerdfonts
     pkgs-stable.corefonts
@@ -269,8 +270,8 @@
         move-to-monitor-down =  [ "<Super><Shift><Control>Down" ];
 
         # Move WINDOW to workspace (what you asked for)
-        move-to-workspace-left = [ "<Super><Control>Left" ];
-        move-to-workspace-right = [ "<Super><Control>Right" ];
+       move-to-workspace-left = [ "<Super><Control>Left" ];
+       move-to-workspace-right = [ "<Super><Control>Right" ];
         
         tile-window-left = [ "@as []" ];
         tile-window-right = [ "@as []" ];
@@ -302,7 +303,7 @@
       # Mutter (tiling system)
       # -----------------------------
        "org/gnome/mutter/keybindings" = {
-          # completely disable built-in tiling shortcuts
+          #completely disable built-in tiling shortcuts
           toggle-tiled-left = [ "@as []" ];
           toggle-tiled-right = [ "@as []" ];
        };
@@ -318,7 +319,6 @@
           switch-to-application-7 = [ "@as []" ];
           switch-to-application-8 = [ "@as []" ];
           switch-to-application-9 = [ "@as []" ];
-          toggle-overview = ["<Super>s"];
        };
 
      "org/gnome/shell/extensions/forge/keybindings" = {
@@ -344,6 +344,11 @@
      "org/gnome/shell/extensions/space-bar/behavior" = {
           toggle-overview = false;
      };
+     
+     "org/gnome/shell/extensions/pop-shell" = {
+          hint-color-rgba = "rgba(110, 147, 204, 1)";
+          #active-hint-border-radius = 17;
+     };
  
    ################### KEY BINDS FOR TILING ######################
 
@@ -361,7 +366,8 @@
           pkgs.gnomeExtensions.search-light.extensionUuid
           pkgs.gnomeExtensions.space-bar.extensionUuid
           pkgs.gnomeExtensions.launch-new-instance.extensionUuid
-          pkgs.gnomeExtensions.forge.extensionUuid
+          pkgs.gnomeExtensions.pop-shell.extensionUuid
+          #pkgs.gnomeExtensions.forge.extensionUuid
           # pkgs.gnomeExtensions.dash-to-dock.extensionUuid
 
           # Alternatively, you can manually pass UUID as a string.  
