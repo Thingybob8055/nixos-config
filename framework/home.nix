@@ -208,11 +208,144 @@
 
   "org/gnome/mutter" = {
       "enable-native-xwayland" = true;
+      "dynamic-workspaces" = false;
+    };
+    
+    "org/gnome/desktop/wm/preferences" = {
+      num-workspaces = 10;
     };
     
     "org/gnome/desktop/sound" = {
       allow-volume-above-100-percent = true;
     };
+    
+    ################### KEY BINDS FOR TILING ######################
+
+    # Media keys (screensaver, browser, etc.)
+      "org/gnome/settings-daemon/plugins/media-keys" = {
+        # Disable overview / "quick settings" binding (Super+S)
+        # GNOME uses "toggle-overview" for this in many setups
+        toggle-overview = [ "@as []" ];
+      
+        screensaver = [ "<Super>Escape" ];
+        www = [ "<Super>b" ];
+
+        custom-keybindings = [
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+        ];
+      };
+
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+        name = "Nautilus";
+        command = "nautilus -w";
+        binding = "<Super>f";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+        name = "KGX";
+        command = "kgx";
+        binding = "<Super>t";
+      };
+
+      # -----------------------------
+      # WM keybindings
+      # -----------------------------
+      "org/gnome/desktop/wm/keybindings" = {
+        toggle-maximized = [ "<Super>m" ];
+        
+        maximize = [ "@as []" ];
+        unmaximize = [ "@as []" ];
+        
+        # Close window
+        close = [
+          "<Super>q"
+          "<Alt>F4"
+        ];
+
+        move-to-monitor-left =  [ "<Super><Shift><Control>Left" ];
+        move-to-monitor-right = [ "<Super><Shift><Control>Right" ];
+        move-to-monitor-up =    [ "<Super><Shift><Control>Up" ];
+        move-to-monitor-down =  [ "<Super><Shift><Control>Down" ];
+
+        # Move WINDOW to workspace (what you asked for)
+        move-to-workspace-left = [ "<Super><Control>Left" ];
+        move-to-workspace-right = [ "<Super><Control>Right" ];
+        
+        tile-window-left = [ "@as []" ];
+        tile-window-right = [ "@as []" ];
+        
+        switch-to-workspace-1 = ["<Super>1"];
+        switch-to-workspace-2 = ["<Super>2"];
+        switch-to-workspace-3 = ["<Super>3"];
+        switch-to-workspace-4 = ["<Super>4"];
+        switch-to-workspace-5 = ["<Super>5"];
+        switch-to-workspace-6 = ["<Super>6"];
+        switch-to-workspace-7 = ["<Super>7"];
+        switch-to-workspace-8 = ["<Super>8"];
+        switch-to-workspace-9 = ["<Super>9"];
+        switch-to-workspace-10 = ["<Super>0"];
+        
+        move-to-workspace-1 = ["<Shift><Super>1"];
+        move-to-workspace-2 = ["<Shift><Super>2"];
+        move-to-workspace-3 = ["<Shift><Super>3"];
+        move-to-workspace-4 = ["<Shift><Super>4"];
+        move-to-workspace-5 = ["<Shift><Super>5"];
+        move-to-workspace-6 = ["<Shift><Super>6"];
+        move-to-workspace-7 = ["<Shift><Super>7"];
+        move-to-workspace-8 = ["<Shift><Super>8"];
+        move-to-workspace-9 = ["<Shift><Super>9"];
+        move-to-workspace-10 = ["<Shift><Super>0"];
+      };
+
+      # -----------------------------
+      # Mutter (tiling system)
+      # -----------------------------
+       "org/gnome/mutter/keybindings" = {
+          # completely disable built-in tiling shortcuts
+          toggle-tiled-left = [ "@as []" ];
+          toggle-tiled-right = [ "@as []" ];
+       };
+       
+       "org/gnome/shell/keybindings" = {
+          # completely disable built-in tiling shortcuts
+          switch-to-application-1 = [ "@as []" ];
+          switch-to-application-2 = [ "@as []" ];
+          switch-to-application-3 = [ "@as []" ];
+          switch-to-application-4 = [ "@as []" ];
+          switch-to-application-5 = [ "@as []" ];
+          switch-to-application-6 = [ "@as []" ];
+          switch-to-application-7 = [ "@as []" ];
+          switch-to-application-8 = [ "@as []" ];
+          switch-to-application-9 = [ "@as []" ];
+          toggle-overview = ["<Super>s"];
+       };
+
+     "org/gnome/shell/extensions/forge/keybindings" = {
+          window-focus-left = ["<Super>left"];
+          window-focus-right = ["<Super>right"];
+          window-focus-up = ["<Super>up"];
+          window-focus-down = ["<Super>down"];
+          workspace-active-tile-toggle = ["<Super>y"];
+          con-split-layout-toggle = ["<Super>c"];
+          window-toggle-float = ["<Super>g"];
+          window-toggle-always-float = ["<Shift><Super>g"];
+          
+          window-swap-left =  ["<Shift><Super>left"];
+          window-swap-right = ["<Shift><Super>right"];
+          window-swap-up =    ["<Shift><Super>up"];
+          window-swap-down =  ["<Shift><Super>down"];
+          
+          mod-mask-mouse-file = ["<Super>"];
+          
+          prefs-tiling-toggle = ["<Shift><Super>y"];
+     };
+     
+     "org/gnome/shell/extensions/space-bar/behavior" = {
+          toggle-overview = false;
+     };
+ 
+   ################### KEY BINDS FOR TILING ######################
 
     "org/gnome/shell" = {
         disable-user-extensions = false;
@@ -228,6 +361,7 @@
           pkgs.gnomeExtensions.search-light.extensionUuid
           pkgs.gnomeExtensions.space-bar.extensionUuid
           pkgs.gnomeExtensions.launch-new-instance.extensionUuid
+          pkgs.gnomeExtensions.forge.extensionUuid
           # pkgs.gnomeExtensions.dash-to-dock.extensionUuid
 
           # Alternatively, you can manually pass UUID as a string.  
