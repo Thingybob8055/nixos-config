@@ -87,6 +87,7 @@
     gnomeExtensions.mosaic
     gnomeExtensions.launch-new-instance
     gnomeExtensions.pop-shell
+    gnomeExtensions.dash-to-dock
     
     pkgs-stable.nerdfonts
     pkgs-stable.corefonts
@@ -146,6 +147,9 @@
     }
     {
       title = "Proton VPN";  # adjust if needed
+    }
+    {
+      title = "MEGAsync";
     }
   ];
   skiptaskbarhidden = [];
@@ -389,6 +393,11 @@
      "org/gnome/shell/extensions/search-light" = {
           shortcut-search = ["<Super>space"];
      };
+     
+     "org/gnome/shell/extensions/dash-to-dock" = {
+          hot-keys = false;
+          intellihide-mode = "ALL_WINDOWS";
+     };
  
    ################### KEY BINDS FOR TILING ######################
 
@@ -408,7 +417,7 @@
           pkgs.gnomeExtensions.launch-new-instance.extensionUuid
           pkgs.gnomeExtensions.pop-shell.extensionUuid
           #pkgs.gnomeExtensions.forge.extensionUuid
-          # pkgs.gnomeExtensions.dash-to-dock.extensionUuid
+          pkgs.gnomeExtensions.dash-to-dock.extensionUuid
 
           # Alternatively, you can manually pass UUID as a string.  
           # ...
