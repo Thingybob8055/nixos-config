@@ -87,10 +87,20 @@
     gnomeExtensions.mosaic
     gnomeExtensions.launch-new-instance
     gnomeExtensions.pop-shell
-    gnomeExtensions.dash-to-dock
+    #gnomeExtensions.dash-to-dock
+    
+    (pkgs.gnomeExtensions.dash-to-dock.overrideAttrs (old: {
+       version = "102";
+       src = pkgs.fetchzip {
+       url = "https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v102.shell-extension.zip";
+    sha256 = "sha256-nks4PIEVmX6THDRAb8PU7t5FuX4w781B8TzcpQRl2yw=";
+    stripRoot = false;
+     };
+    }))
     
     pkgs-stable.nerdfonts
     pkgs-stable.corefonts
+    pkgs-stable.neofetch
     
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
