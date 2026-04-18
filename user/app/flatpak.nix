@@ -15,7 +15,7 @@
   "app.zen_browser.zen"
   "org.gtk.Gtk3theme.Adwaita-dark"
   "com.mattjakeman.ExtensionManager"
-  "com.usebottles.bottles"
+  #"com.usebottles.bottles"
   #"org.flameshot.Flameshot"
   "org.kicad.KiCad"
   "org.kde.kdenlive"

@@ -42,6 +42,9 @@
     yabridgectl
     dxvk
     vesktop
+    (pkgs.bottles.override {
+    removeWarningPopup = true;
+    })
     
     (writeShellScriptBin "vesktop-themed" ''
       THEME=$(gsettings get org.gnome.desktop.interface color-scheme)
