@@ -14,5 +14,3 @@ $HOME/.local/share/yabridge/yabridgectl sync
 $HOME/.local/share/yabridge/yabridgectl status
 
 WINEPREFIX=~/.wine winetricks dxvk
-
-## if I install fusion 360 wine, remember to pkill winedevice.exe and wineserver in desktop and close via shortcut

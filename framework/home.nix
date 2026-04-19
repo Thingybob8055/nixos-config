@@ -42,6 +42,7 @@
     yabridgectl
     dxvk
     vesktop
+    equibop
     (pkgs.bottles.override {
     removeWarningPopup = true;
     })
