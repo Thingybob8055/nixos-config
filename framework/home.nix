@@ -175,6 +175,8 @@
     }))
     
     pkgs-stable.nerdfonts
+    pkgs-stable.fira
+    pkgs-stable.roboto
     pkgs-stable.corefonts
     pkgs-stable.neofetch
     
