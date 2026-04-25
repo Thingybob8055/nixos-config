@@ -43,6 +43,8 @@
     dxvk
     vesktop
     equibop
+    davinci-resolve
+    ffmpeg
     (pkgs.bottles.override {
     removeWarningPopup = true;
     })
@@ -76,6 +78,76 @@
     else
       GTK_THEME=Adwaita appimage-run /home/akshay/AppImages/moises.appimage
     fi
+  '')
+    
+    (writeShellScriptBin "resolve-transcode" ''
+     #!/usr/bin/env bash
+
+     set -e
+
+     INPUT="$1"
+     CODEC="''${2:-dnxhr}"   # dnxhr | prores | cineform
+     AUDIO_BITS="''${3:-16}" # 16 or 24
+
+     if [ -z "$INPUT" ]; then
+        echo "Usage: resolve-transcode <file|directory> [dnxhr|prores|cineform] [16|24]"
+        exit 1
+     fi
+
+     # Audio setting
+     if [ "$AUDIO_BITS" = "24" ]; then
+       AUDIO_CODEC="pcm_s24le"
+     else
+       AUDIO_CODEC="pcm_s16le"
+     fi
+
+     convert_file() {
+       INFILE="$1"
+       BASENAME=$(basename "$INFILE")
+       NAME="''${BASENAME%.*}"
+       OUTFILE="''${NAME}_resolve.mov"
+
+    echo "Converting: $INFILE -> $OUTFILE"
+
+    case "$CODEC" in
+      dnxhr)
+         ffmpeg -y -i "$INFILE" \
+          -c:v dnxhd -profile:v dnxhr_hq \
+          -pix_fmt yuv422p \
+          -c:a "$AUDIO_CODEC" \
+          "$OUTFILE"
+        ;;
+    prores)
+      ffmpeg -y -i "$INFILE" \
+        -c:v prores -profile:v 3 \
+        -pix_fmt yuv422p10le \
+        -c:a "$AUDIO_CODEC" \
+        "$OUTFILE"
+      ;;
+    cineform)
+      ffmpeg -y -i "$INFILE" \
+        -c:v cfhd -quality 3 \
+        -pix_fmt yuv422p \
+        -c:a "$AUDIO_CODEC" \
+        "$OUTFILE"
+      ;;
+    *)
+      echo "Unknown codec: $CODEC"
+      exit 1
+      ;;
+    esac
+  }
+
+  if [ -f "$INPUT" ]; then
+     convert_file "$INPUT"
+  elif [ -d "$INPUT" ]; then
+     for f in "$INPUT"/*; do
+     [ -f "$f" ] && convert_file "$f"
+   done
+  else
+  echo "Invalid input: $INPUT"
+  exit 1
+  fi
   '')
     
     gnomeExtensions.blur-my-shell
