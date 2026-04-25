@@ -537,8 +537,8 @@
   let
   # My shell aliases
   myAliases = {
-    dev-rust = "nix develop /etc/nixos\#rust-dev -c zsh";
-    dev-embed = "nix develop /etc/nixos\#embed-dev -c zsh ";
+    dev-rust = "nix develop /etc/nixos\#rust-dev";
+    dev-embed = "nix develop /etc/nixos\#embed-dev";
     #ls = "eza --icons -l -T -L=1";
     #cat = "bat";
     #htop = "btm";

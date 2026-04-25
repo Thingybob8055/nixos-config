@@ -16,6 +16,9 @@ pkgs.mkShell {
   shellHook = ''
     # Optional: tell VS Code and other tools where to find cmake automatically
     export PATH=$PATH
+    if [ -z "$ZSH_VERSION" ]; then
+      exec zsh
+    fi
   '';
 
 }

@@ -10,5 +10,8 @@ pkgs.mkShell {
 
   shellHook = ''
     export RUST_SRC_PATH="${pkgs.rustPlatform.rustLibSrc}"
+    if [ -z "$ZSH_VERSION" ]; then
+      exec zsh
+    fi
   '';
 }
