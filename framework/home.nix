@@ -26,7 +26,6 @@
     libreoffice
     discord
     spotify
-    rustc
     unityhub
     steam
     stm32cubemx
