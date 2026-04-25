@@ -11,6 +11,7 @@
       ../system/app/flatpak.nix
       inputs.home-manager.nixosModules.default
       ../system/gaming.nix
+      ../system/keyd.nix
     ];
 
   # Bootloader.
@@ -216,6 +217,7 @@
      libfprint
      usbutils
      pulseaudio
+     keyd
   ];
   
   environment.shells = with pkgs; [ zsh ];
