@@ -294,7 +294,7 @@
   
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode.fhs;
+    package = pkgs.vscode.fhsWithPackages (ps: with ps; [ python3 ]);
   };
   
   programs.git = {
@@ -537,6 +537,8 @@
   let
   # My shell aliases
   myAliases = {
+    dev-rust = "nix develop /etc/nixos\#rust-dev -c zsh";
+    dev-embed = "nix develop /etc/nixos\#embed-dev -c zsh ";
     #ls = "eza --icons -l -T -L=1";
     #cat = "bat";
     #htop = "btm";
@@ -562,6 +564,20 @@ in
     ];
     theme = "robbyrussell";
   };
+
+   initContent = ''
+  nix_shell_info() {
+    if [[ -n "$IN_NIX_SHELL" ]]; then
+      if [[ -n "$name" ]]; then
+        echo "%F{blue}❄️ ($name)%f "
+      else
+        echo "%F{blue}❄️ nix%f "
+      fi
+    fi
+  }
+ 
+    PROMPT='$(nix_shell_info)'$PROMPT
+  '';
 
   #home.packages = with pkgs; [
   #  disfetch lolcat cowsay onefetch
