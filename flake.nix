@@ -77,6 +77,12 @@
         ];
 
       };
+      
+      devShells.x86_64-linux = {
+           rust-dev = import ./dev/rust.nix { pkgs = nixpkgs.legacyPackages.x86_64-linux; };
+
+           embed-dev = import ./dev/embed.nix { pkgs = nixpkgs.legacyPackages.x86_64-linux; };
+     };
 
       #homeConfigurations = {
       #  akshay = inputs.home-manager.lib.homeManagerConfiguration {
