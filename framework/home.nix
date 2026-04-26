@@ -294,7 +294,7 @@
   
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode.fhsWithPackages (ps: with ps; [ python3 ]);
+    package = pkgs.vscode.fhsWithPackages (ps: with ps; [ python311 ]);
   };
   
   programs.git = {
