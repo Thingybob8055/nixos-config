@@ -9,7 +9,7 @@
 
       settings = {
         main = {
-          f12 = "delete";
+          rightcontrol = "delete";
         };
       };
     };

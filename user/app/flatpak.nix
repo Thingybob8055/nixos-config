@@ -27,6 +27,7 @@
   "org.qbittorrent.qBittorrent"
   "it.mijorus.gearlever"
   "com.github.flxzt.rnote"
+  "org.openscad.OpenSCAD"
   ];
   
   # Configuration file for Spotify flags
