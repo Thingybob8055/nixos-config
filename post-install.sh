@@ -8,9 +8,11 @@ yabridgectl add "$HOME/.wine/drive_c/Program Files/Common Files/CLAP"
 yabridgectl add "$HOME/Documents/vsts/dll and vst3 files"
 
 echo "Starting yabridge host..."
-$HOME/.local/share/yabridge/yabridge-host.exe
+yabridge-host.exe
 
-$HOME/.local/share/yabridge/yabridgectl sync
-$HOME/.local/share/yabridge/yabridgectl status
+yabridgectl sync
+yabridgectl status
+yabridgectl --version
+
 
 WINEPREFIX=~/.wine winetricks dxvk
