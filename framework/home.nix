@@ -94,6 +94,7 @@
     #wofi
     #hyprlauncher
     swayosd
+    jq
 
     # (pkgs.catppuccin-gtk.override {
     #   accents = [ "blue" ]; # Choose your accent
@@ -222,6 +223,33 @@
       swappy -f "$file"
     '')
     
+    (pkgs.writeShellScriptBin "hypr-lid" ''
+       #!/usr/bin/env bash
+
+      EXTERNAL=$(hyprctl monitors -j | jq '[.[] | select(.name != "eDP-1")] | length')
+
+      EVENT="$1"
+
+      echo "External monitors: $EXTERNAL"
+
+      if [[ "$EVENT" == "close" ]]; then
+        if [[ "$EXTERNAL" -gt 0 ]]; then
+          hyprctl keyword monitor eDP-1,disable
+        else
+          hyprlock
+          sleep 0.5
+          systemctl suspend -i
+        fi
+      fi
+
+      if [[ "$EVENT" == "open" ]]; then
+        if [[ "$EXTERNAL" -gt 0 ]]; then
+          hyprctl reload
+        fi
+      fi
+      '')
+
+
     gnomeExtensions.blur-my-shell
     gnomeExtensions.appindicator
     gnomeExtensions.rounded-window-corners-reborn
