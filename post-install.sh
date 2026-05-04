@@ -14,5 +14,6 @@ yabridgectl sync
 yabridgectl status
 yabridgectl --version
 
+hyprshell config generate
 
 WINEPREFIX=~/.wine winetricks dxvk

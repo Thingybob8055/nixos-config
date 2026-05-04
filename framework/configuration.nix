@@ -38,16 +38,6 @@
       extraEntriesBeforeNixOS = true;
     };
   };
-  
-  #boot.loader.grub = {
-  #  minegrub-theme = {
-  #    enable = true;
-  #    splash = "100% Flakes!";
-  #    background = "background_options/1.8  - [Classic Minecraft].png";
-  #    boot-options-count = 4;
-  #  };
-    # ...
- # };
 
   boot.plymouth.enable = true;
   boot.kernelParams = [ "mem_sleep_default=deep" "quiet" "splash"];
@@ -59,10 +49,6 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
-
- # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -88,33 +74,24 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  # services.xserver.displayManager.gdm.enable = true;
-  # services.xserver.desktopManager.gnome.enable = true;
-  # services.xserver.displayManager.gdm.wayland = true;
-  
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
   services.displayManager.gdm.wayland = true;
+
+  programs.hyprland.enable = true;
+  # programs.hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   
-  xdg.portal.enable = true;
-  #xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-  
-  
-  #programs.dconf.profiles.user.databases = [
-   # {
-   #   settings = {
-   #     "org/gnome/mutter" = {
-    #      experimental-features = [
-     #       "scale-monitor-framebuffer" # Enables fractional scaling (125% 150% 175%)
-       #     "xwayland-native-scaling" # Scales Xwayland applications to look crisp on HiDPI screens
-      #      "autoclose-xwayland" # automatically terminates Xwayland if all relevant X11 clients are gone
-       #   ];
-       # };
-     # };
-   # }
-  #];
+  # xdg.portal.enable = true;
+  # xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland ];
+  # xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+  xdg.portal = {
+  enable = true;
+
+  extraPortals = [
+    pkgs.xdg-desktop-portal-gtk
+    pkgs.xdg-desktop-portal-hyprland
+  ];
+ };
 
 
   # Configure keymap in X11
@@ -143,6 +120,18 @@
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
+  };
+
+  services.logind = {
+    settings = {
+      Login = {
+        HandlePowerKey = "ignore";
+        HandleSuspendKey = "ignore";
+        HandleLidSwitch = "ignore";
+        HandleLidSwitchExternalPower = "ignore";
+        HandleLidSwitchDocked = "ignore";
+      };
+    };
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -218,7 +207,24 @@
      usbutils
      pulseaudio
      keyd
+     power-profiles-daemon
+     networkmanagerapplet
+     blueman
+     bluez
+     bluez-tools
+     libsecret
+     gnome-keyring
   ];
+
+  services.blueman.enable = true;
+  services.power-profiles-daemon.enable = true;
+  
+  # services.logind.settings = {
+  #   Login = {
+  #     HandlePowerKey = "suspend";
+  #     HandlePowerKeyLongPress = "poweroff";
+  #   };
+  # };
   
   environment.shells = with pkgs; [ zsh ];
   users.defaultUserShell = pkgs.zsh;
@@ -236,6 +242,13 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  home-manager.backupFileExtension = "bak";
+  security.pam.services.greetd.enableGnomeKeyring = true;
+  services.gnome.gnome-keyring.enable = true;
+  environment.variables.XDG_RUNTIME_DIR = "/run/user/$UID";
+
+  security.polkit.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

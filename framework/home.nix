@@ -48,6 +48,59 @@
     removeWarningPopup = true;
     })
     
+    waybar
+    wdisplays
+    brightnessctl
+    pamixer
+    pavucontrol
+    wireplumber
+    playerctl
+    adwaita-icon-theme
+    nerd-fonts.jetbrains-mono
+    lexend
+    nwg-look
+    
+    grim
+    slurp
+    swappy
+    wl-clipboard
+    cliphist
+    libnotify
+    swaynotificationcenter
+    wofi
+    libsForQt5.qt5ct
+    qt6Packages.qt6ct
+    kdePackages.qtstyleplugin-kvantum
+    kdePackages.breeze-icons
+    copyq
+    hyprlock
+    hypridle
+    hyprshell
+    # sherlock-launcher
+
+    adw-gtk3
+    adwaita-qt
+    adwaita-qt6
+    intel-gpu-tools
+    wleave
+    adwaita-icon-theme
+    hicolor-icon-theme
+    awww
+    kitty-themes
+    google-fonts
+    icomoon-feather
+    nerd-fonts.iosevka
+
+    #wofi
+    #hyprlauncher
+    swayosd
+
+    # (pkgs.catppuccin-gtk.override {
+    #   accents = [ "blue" ]; # Choose your accent
+    #   size = "standard";
+    #   variant = "mocha";    # Change from "frappe" to "mocha", "macchiato", or "latte"
+    # })
+
     (writeShellScriptBin "vesktop-themed" ''
       THEME=$(gsettings get org.gnome.desktop.interface color-scheme)
 
@@ -148,6 +201,26 @@
   exit 1
   fi
   '')
+
+  (writeShellScriptBin "screenshot" ''
+      set -e
+
+      dir="$HOME/Pictures/Screenshots"
+      mkdir -p "$dir"
+
+      file="$dir/screen-$(date +%Y-%m-%d-%H-%M-%S).png"
+
+      mode="$1"
+
+      if [ "$mode" = "area" ]; then
+        grim -g "$(slurp)" - | tee "$file" | wl-copy
+      else
+        grim "$file"
+        cat "$file" | wl-copy
+      fi
+
+      swappy -f "$file"
+    '')
     
     gnomeExtensions.blur-my-shell
     gnomeExtensions.appindicator
@@ -279,6 +352,21 @@
     # EDITOR = "emacs";
   #};
 
+  # gtk.gtk4.theme = config.gtk.theme;
+
+  # gtk = {
+  #   enable = true;
+
+  #   theme = {
+  #     name = "catppuccin-mocha-blue-standard";
+  #     package = pkgs.catppuccin-gtk.override {
+  #       variant = "mocha";
+  #       accents = [ "blue" ];
+  #       size = "standard";
+  #     };
+  #   };
+  # };
+
   home.sessionVariables = {
     # Add environment variables if needed
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
@@ -287,6 +375,8 @@
     QT_QPA_PLATFORM = "wayland;xcb";  # Use Wayland, fallback to XCB
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
+    QT_QPA_PLATFORMTHEME = "qt6ct";
+    # QT_STYLE_OVERRIDE = "Adwaita-Dark";
   };
 
   # Let Home Manager install and manage itself.
@@ -524,6 +614,404 @@
     };
   };
 
+  programs.kitty = {
+    enable = true;
+    settings = {
+      confirm_os_window_close = 0;
+    };
+    extraConfig = ''
+      include ${pkgs.kitty-themes}/share/kitty-themes/themes/adwaita_dark.conf
+    '';
+  };
+
+  programs.rofi = {
+    enable = true;
+    package = pkgs.rofi;
+    plugins = with pkgs; [
+      rofi-calc
+      rofi-power-menu
+    ];
+  };
+
+  xdg.configFile."rofi/config.rasi".text = ''
+    configuration {
+    /*---------- General setting ----------*/
+    modi: "drun,run,filebrowser,window";
+    case-sensitive: false;
+    cycle: true;
+    filter: "";
+    scroll-method: 0;
+    normalize-match: true;
+    show-icons: true;
+    icon-theme: "Papirus";
+  /*	cache-dir: ;*/
+    steal-focus: false;
+  /*	dpi: -1;*/
+
+    /*---------- Matching setting ----------*/
+    matching: "normal";
+    tokenize: true;
+
+    /*---------- SSH settings ----------*/
+    ssh-client: "ssh";
+    ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";
+    parse-hosts: true;
+    parse-known-hosts: true;
+
+    /*---------- Drun settings ----------*/
+    drun-categories: "";
+    drun-match-fields: "name,generic,exec,categories,keywords";
+    drun-display-format: "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
+    drun-show-actions: false;
+    drun-url-launcher: "xdg-open";
+    drun-use-desktop-cache: false;
+    drun-reload-desktop-cache: false;
+    drun {
+      /** Parse user desktop files. */
+      parse-user:   true;
+      /** Parse system desktop files. */
+      parse-system: true;
+      }
+
+    /*---------- Run settings ----------*/
+    run-command: "{cmd}";
+    run-list-command: "";
+    run-shell-command: "{terminal} -e {cmd}";
+
+    /*---------- Fallback Icon ----------*/
+    run,drun {
+      fallback-icon: "application-x-addon";
+    }
+
+    /*---------- Window switcher settings ----------*/
+    window-match-fields: "title,class,role,name,desktop";
+    window-command: "wmctrl -i -R {window}";
+    window-format: "{w} - {c} - {t:0}";
+    window-thumbnail: false;
+
+    /*---------- Combi settings ----------*/
+  /*	combi-modi: "window,run";*/
+  /*	combi-hide-mode-prefix: false;*/
+  /*	combi-display-format: "{mode} {text}";*/
+
+    /*---------- History and Sorting ----------*/
+    disable-history: false;
+    sorting-method: "normal";
+    max-history-size: 25;
+
+    /*---------- Display setting ----------*/
+    display-window: "Windows";
+    display-windowcd: "Window CD";
+    display-run: "Run";
+    display-ssh: "SSH";
+    display-drun: "Apps";
+    display-combi: "Combi";
+    display-keys: "Keys";
+    display-filebrowser: "Files";
+
+    /*---------- Misc setting ----------*/
+    terminal: "rofi-sensible-terminal";
+    font: "Mono 12";
+    sort: false;
+    threads: 0;
+    click-to-exit: true;
+  /*	ignored-prefixes: "";*/
+  /*	pid: "/run/user/1000/rofi.pid";*/
+
+    /*---------- File browser settings ----------*/
+      filebrowser {
+  /*	  directory: "/home";*/
+        directories-first: true;
+        sorting-method:    "name";
+      }
+
+    /*---------- Other settings ----------*/
+      timeout {
+        action: "kb-cancel";
+        delay:  0;
+      }
+
+    /*---------- Keybindings ----------*/
+  /*
+    kb-primary-paste: "Control+V,Shift+Insert";
+    kb-secondary-paste: "Control+v,Insert";
+    kb-clear-line: "Control+w";
+    kb-move-front: "Control+a";
+    kb-move-end: "Control+e";
+    kb-move-word-back: "Alt+b,Control+Left";
+    kb-move-word-forward: "Alt+f,Control+Right";
+    kb-move-char-back: "Left,Control+b";
+    kb-move-char-forward: "Right,Control+f";
+    kb-remove-word-back: "Control+Alt+h,Control+BackSpace";
+    kb-remove-word-forward: "Control+Alt+d";
+    kb-remove-char-forward: "Delete,Control+d";
+    kb-remove-char-back: "BackSpace,Shift+BackSpace,Control+h";
+    kb-remove-to-eol: "Control+k";
+    kb-remove-to-sol: "Control+u";
+    kb-accept-entry: "Control+j,Control+m,Return,KP_Enter";
+    kb-accept-custom: "Control+Return";
+    kb-accept-custom-alt: "Control+Shift+Return";
+    kb-accept-alt: "Shift+Return";
+    kb-delete-entry: "Shift+Delete";
+    kb-mode-next: "Shift+Right,Control+Tab";
+    kb-mode-previous: "Shift+Left,Control+ISO_Left_Tab";
+    kb-mode-complete: "Control+l";
+    kb-row-left: "Control+Page_Up";
+    kb-row-right: "Control+Page_Down";
+    kb-row-down: "Down,Control+n";
+    kb-page-prev: "Page_Up";
+    kb-page-next: "Page_Down";
+    kb-row-first: "Home,KP_Home";
+    kb-row-last: "End,KP_End";
+    kb-row-select: "Control+space";
+    kb-screenshot: "Alt+S";
+    kb-ellipsize: "Alt+period";
+    kb-toggle-case-sensitivity: "grave,dead_grave";
+    kb-toggle-sort: "Alt+grave";
+    kb-cancel: "Escape,Control+g,Control+bracketleft";
+    kb-custom-1: "Alt+1";
+    kb-custom-2: "Alt+2";
+    kb-custom-3: "Alt+3";
+    kb-custom-4: "Alt+4";
+    kb-custom-5: "Alt+5";
+    kb-custom-6: "Alt+6";
+    kb-custom-7: "Alt+7";
+    kb-custom-8: "Alt+8";
+    kb-custom-9: "Alt+9";
+    kb-custom-10: "Alt+0";
+    kb-custom-11: "Alt+exclam";
+    kb-custom-12: "Alt+at";
+    kb-custom-13: "Alt+numbersign";
+    kb-custom-14: "Alt+dollar";
+    kb-custom-15: "Alt+percent";
+    kb-custom-16: "Alt+dead_circumflex";
+    kb-custom-17: "Alt+ampersand";
+    kb-custom-18: "Alt+asterisk";
+    kb-custom-19: "Alt+parenleft";
+    kb-select-1: "Super+1";
+    kb-select-2: "Super+2";
+    kb-select-3: "Super+3";
+    kb-select-4: "Super+4";
+    kb-select-5: "Super+5";
+    kb-select-6: "Super+6";
+    kb-select-7: "Super+7";
+    kb-select-8: "Super+8";
+    kb-select-9: "Super+9";
+    kb-select-10: "Super+0";
+    ml-row-left: "ScrollLeft";
+    ml-row-right: "ScrollRight";
+    ml-row-up: "ScrollUp";
+    ml-row-down: "ScrollDown";
+    me-select-entry: "MousePrimary";
+    me-accept-entry: "MouseDPrimary";
+    me-accept-custom: "Control+MouseDPrimary";
+  */
+  }
+  '';
+
+   xdg.dataFile."rofi/themes/custom-theme.rasi".text = ''
+    /*****----- Configuration -----*****/
+    configuration {
+      modi:                       "drun,run,filebrowser,window,calc";
+        show-icons:                 true;
+        display-drun:               "APPS";
+        display-run:                "RUN";
+        display-filebrowser:        "FILES";
+        display-window:             "WINDOW";
+      drun-display-format:        "{name}";
+      window-format:              "{w} · {c} · {t}";
+    }
+
+    /*****----- Global Properties -----*****/
+    * {
+        font:                        "JetBrains Mono Nerd Font 10";
+        background:     #1E1D2FFF;
+        background-alt: #282839FF;
+        foreground:     #D9E0EEFF;
+        selected:       #7AA2F7FF;
+        active:         #ABE9B3FF;
+        urgent:         #F28FADFF;
+    }
+
+    /*****----- Main Window -----*****/
+    window {
+        /* properties for window widget */
+        transparency:                "real";
+        location:                    center;
+        anchor:                      center;
+        fullscreen:                  false;
+        width:                       1000px;
+        x-offset:                    0px;
+        y-offset:                    0px;
+
+        /* properties for all widgets */
+        enabled:                     true;
+        border-radius:               15px;
+        cursor:                      "default";
+        background-color:            @background;
+    }
+
+    /*****----- Main Box -----*****/
+    mainbox {
+        enabled:                     true;
+        spacing:                     0px;
+        background-color:            transparent;
+        orientation:                 horizontal;
+        children:                    [ "imagebox", "listbox" ];
+    }
+
+    imagebox {
+        padding:                     20px;
+        background-color:            transparent;
+        background-image:            url("~/.wallpapers/a.png", height);
+        orientation:                 vertical;
+        children:                    [ "inputbar", "dummy", "mode-switcher" ];
+    }
+
+    listbox {
+        spacing:                     20px;
+        padding:                     20px;
+        background-color:            transparent;
+        orientation:                 vertical;
+        children:                    [ "message", "listview" ];
+    }
+
+    dummy {
+        background-color:            transparent;
+    }
+
+    /*****----- Inputbar -----*****/
+    inputbar {
+        enabled:                     true;
+        spacing:                     10px;
+        padding:                     15px;
+        border-radius:               10px;
+        background-color:            @background-alt;
+        text-color:                  @foreground;
+        children:                    [ "textbox-prompt-colon", "entry" ];
+    }
+    textbox-prompt-colon {
+        enabled:                     true;
+        expand:                      false;
+        str:                         "";
+        background-color:            inherit;
+        text-color:                  inherit;
+    }
+    entry {
+        enabled:                     true;
+        background-color:            inherit;
+        text-color:                  inherit;
+        cursor:                      text;
+        placeholder:                 "Search";
+        placeholder-color:           inherit;
+    }
+
+    /*****----- Mode Switcher -----*****/
+    mode-switcher{
+        enabled:                     true;
+        spacing:                     20px;
+        background-color:            transparent;
+        text-color:                  @foreground;
+    }
+    button {
+        padding:                     15px;
+        border-radius:               10px;
+        background-color:            @background-alt;
+        text-color:                  inherit;
+        cursor:                      pointer;
+    }
+    button selected {
+        background-color:            @selected;
+        text-color:                  @foreground;
+    }
+
+    /*****----- Listview -----*****/
+    listview {
+        enabled:                     true;
+        columns:                     1;
+        lines:                       8;
+        cycle:                       true;
+        dynamic:                     true;
+        scrollbar:                   false;
+        layout:                      vertical;
+        reverse:                     false;
+        fixed-height:                true;
+        fixed-columns:               true;
+        
+        spacing:                     10px;
+        background-color:            transparent;
+        text-color:                  @foreground;
+        cursor:                      "default";
+    }
+
+    /*****----- Elements -----*****/
+    element {
+        enabled:                     true;
+        spacing:                     15px;
+        padding:                     8px;
+        border-radius:               10px;
+        background-color:            transparent;
+        text-color:                  @foreground;
+        cursor:                      pointer;
+    }
+    element normal.normal {
+        background-color:            inherit;
+        text-color:                  inherit;
+    }
+    element normal.urgent {
+        background-color:            @urgent;
+        text-color:                  @foreground;
+    }
+    element normal.active {
+        background-color:            @active;
+        text-color:                  @foreground;
+    }
+    element selected.normal {
+        background-color:            @selected;
+        text-color:                  @foreground;
+    }
+    element selected.urgent {
+        background-color:            @urgent;
+        text-color:                  @foreground;
+    }
+    element selected.active {
+        background-color:            @urgent;
+        text-color:                  @foreground;
+    }
+    element-icon {
+        background-color:            transparent;
+        text-color:                  inherit;
+        size:                        32px;
+        cursor:                      inherit;
+    }
+    element-text {
+        background-color:            transparent;
+        text-color:                  inherit;
+        cursor:                      inherit;
+        vertical-align:              0.5;
+        horizontal-align:            0.0;
+    }
+
+    /*****----- Message -----*****/
+    message {
+        background-color:            transparent;
+    }
+    textbox {
+        padding:                     15px;
+        border-radius:               10px;
+        background-color:            @background-alt;
+        text-color:                  @foreground;
+        vertical-align:              0.5;
+        horizontal-align:            0.0;
+    }
+    error-message {
+        padding:                     15px;
+        border-radius:               20px;
+        background-color:            @background;
+        text-color:                  @foreground;
+}
+    '';
+
   #programs.spicetify =
   #let
   #  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
@@ -533,6 +1021,17 @@
   #  wayland = false;
   #};
   
+  home.file.".vscode/argv.json".text = ''
+    {
+      // Fixes the "an OS keyring couldn't be identified for
+      // storing the encryption..." error
+      
+      "password-store":"gnome-libsecret"
+    }
+  '';
+
+  services.swayosd.enable = true;
+
   programs.zsh =
   let
   # My shell aliases
@@ -596,6 +1095,927 @@ in
   #  enableCompletion = true;
   #  shellAliases = myAliases;
   #};
- 
+
+  # ==============================
+# WAYBAR (Hyprland setup)
+# ==============================
+
+programs.waybar = {
+  enable = true;
+  systemd.enable = true;
+
+  settings = {
+    mainBar = {
+      layer = "top";
+      position = "top";
+      height = 34;
+      spacing = 6;
+
+      modules-left = [
+        "hyprland/workspaces"
+        "hyprland/window"
+      ];
+
+      modules-center = [
+        "clock"
+      ];
+
+      modules-right = [
+        "backlight"
+        "pulseaudio"
+        "tray"
+        "mpris"
+        "custom/power-profile"
+        "battery"
+        "custom/notifications"
+        "custom/power"
+      ];
+
+      clock = {
+        format = "{:%H:%M  %a %d %b}";
+        tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
+      };
+
+      # -----------------------------
+      # WINDOW (with emoji fallback)
+      # -----------------------------
+      "hyprland/window" = {
+        format = "{title}";
+        rewrite = {
+          "" = "🚀 Desktop";
+        };
+      };
+
+      # -----------------------------
+      # WORKSPACES
+      # -----------------------------
+      "hyprland/workspaces" = {
+        format = "{name}";
+        on-click = "activate";
+      };
+
+      # -----------------------------
+      # BACKLIGHT (brightness)
+      # -----------------------------
+      backlight = {
+        format = "☀ {percent}%";
+        device = "intel_backlight";
+      };
+
+      # -----------------------------
+      # AUDIO (fixed icons)
+      # -----------------------------
+      pulseaudio = {
+        format = "{volume}% {icon}";
+        format-muted = " Muted";
+
+        format-icons = {
+          default = [ "" "" "" ];
+          headphone = "";
+        };
+
+        on-click = "pavucontrol";
+        on-click-right = "pamixer -t";
+        on-scroll-up = "pamixer -i 5";
+        on-scroll-down = "pamixer -d 5";
+      };
+
+      # -----------------------------
+      # MEDIA CONTROLS
+      # -----------------------------
+      mpris = {
+        format = "{player_icon} {title}";
+        format-paused = " {title}";
+        interval = 1;
+        max-length = 30;
+
+        on-click = "playerctl play-pause";
+        on-scroll-up = "playerctl next";
+        on-scroll-down = "playerctl previous";
+      };
+
+      # -----------------------------
+      # TRAY
+      # -----------------------------
+      tray = {
+        spacing = 10;
+      };
+
+      # -----------------------------
+      # POWER MENU
+      # -----------------------------
+      "custom/power" = {
+        format = "⏻";
+        on-click = "wleave";
+        tooltip = true;
+        tooltip-format = "Power Menu";
+      };
+
+      "custom/power-profile" = {
+        format = "⚡ {}";
+        exec = "powerprofilesctl get";
+        interval = 5;
+
+        on-click = ''
+          bash -c '
+            case "$(powerprofilesctl get)" in
+              performance) powerprofilesctl set balanced ;;
+              balanced) powerprofilesctl set power-saver ;;
+              power-saver) powerprofilesctl set performance ;;
+            esac
+          '
+        '';
+      };
+
+      battery = {
+        states = {
+          warning = 30;
+          critical = 15;
+        };
+
+        format = "{icon}  {capacity}%";
+        format-charging = " {capacity}%";
+        format-plugged = " {capacity}%";
+
+        format-icons = ["" "" "" "" ""];
+      };
+
+      "custom/notifications" = {
+        format = "🔔";
+        tooltip = true;
+        exec = "swaync-client -swb";
+        on-click = "swaync-client -t";
+      };
+
+    };
+  };
+
+  style = ''
+    * {
+      min-height: 0;
+      min-width: 0;
+      font-family: "Lexend", "JetBrainsMono Nerd Font";
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    window#waybar {
+      background: rgba(17, 17, 27, 0.75);
+      border-radius: 12px;
+      margin: 6px 10px;
+    }
+
+    #workspaces button {
+      padding: 0.3rem 0.6rem;
+      margin: 0.3rem 0.2rem;
+      border-radius: 8px;
+      background-color: rgba(30, 30, 46, 0.5);
+      color: #cdd6f4;
+      transition: all 0.2s ease;
+    }
+
+    #workspaces button:hover {
+      background-color: rgba(137, 180, 250, 0.25);
+      color: white;
+    }
+
+    #workspaces button.active {
+      background-color: #89b4fa;
+      color: #11111b;
+    }
+
+    #clock,
+    #pulseaudio,
+    #backlight,
+    #tray,
+    #window,
+    #mpris,
+    #custom-power {
+      padding: 0.3rem 0.7rem;
+      margin: 0.3rem 0.2rem;
+      border-radius: 10px;
+      background: rgba(30, 30, 46, 0.5);
+      color: #cdd6f4;
+    }
+
+    #backlight { color: #f9e2af; }
+    #clock { color: #74c7ec; }
+    #pulseaudio { color: #b4befe; }
+    #mpris { color: #a6e3a1; }
+    #custom-power { color: #f38ba8; }
+
+    #network,
+    #bluetooth,
+    #battery,
+    #custom-power-profile {
+      padding: 0.3rem 0.7rem;
+      margin: 0.3rem 0.2rem;
+      border-radius: 10px;
+      background: rgba(30, 30, 46, 0.5);
+      color: #cdd6f4;
+      transition: all 0.2s ease;
+    }
+
+    #custom-power-profile {
+      color: #f9e2af;
+      font-weight: 600;
+    }
+
+    #custom-power-profile:hover {
+      background: rgba(249, 226, 175, 0.15);
+    }
+
+    #battery {
+      color: #a6e3a1;
+    }
+
+    #battery.charging {
+      color: #89b4fa;
+    }
+
+    #battery.warning {
+      color: #f9e2af;
+    }
+
+    #battery.critical {
+      color: #f38ba8;
+      animation: blink 1s infinite;
+    }
+
+    #network {
+      color: #89b4fa;
+    }
+
+    #network.disconnected {
+      color: #6c7086;
+    }
+
+    #bluetooth {
+      color: #b4befe;
+    }
+
+    #bluetooth.disabled {
+      color: #6c7086;
+    }
+
+    #bluetooth.connected {
+      color: #89dceb;
+    }
+
+    tooltip {
+      background: rgba(17, 17, 27, 0.95);
+      border-radius: 10px;
+      border: 1px solid rgba(137, 180, 250, 0.4);
+    }
+  '';
+};
+
+
+xdg.configFile."hypr/hyprlock.conf".text = ''
+  source = ~/.cache/wal/colors-hyprland.conf
+
+  # -------------------------
+  # BACKGROUND
+  # -------------------------
+  background {
+      monitor =
+      path = /home/akshay/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
+
+      blur_passes = 2
+      contrast = 1
+      brightness = 0.5
+      vibrancy = 0.2
+      vibrancy_darkness = 0.2
+  }
+
+  # -------------------------
+  # GENERAL
+  # -------------------------
+  general {
+      no_fade_in = true
+      no_fade_out = true
+      hide_cursor = false
+      grace = 0
+      disable_loading_bar = true
+  }
+
+  # -------------------------
+  # INPUT FIELD
+  # -------------------------
+  input-field {
+      monitor =
+      size = 250, 60
+      outline_thickness = 2
+      dots_size = 0.2
+      dots_spacing = 0.35
+      dots_center = true
+
+      outer_color = rgba(0, 0, 0, 0)
+      inner_color = rgba(0, 0, 0, 0.2)
+      font_color = rgba(255, 255, 255, 0.9)
+
+      fade_on_empty = false
+      rounding = -1
+      check_color = rgb(204, 136, 34)
+
+      placeholder_text = Input Password...
+
+      hide_input = false
+
+      position = 0, -200
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # DATE
+  # -------------------------
+  label {
+      text = cmd[update:1000] echo "$(date +'%A, %B %d')"
+      color = rgba(242, 243, 244, 0.75)
+      font_size = 22
+      font_family = JetBrains Mono
+
+      position = 0, 300
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # TIME
+  # -------------------------
+  label {
+      text = cmd[update:1000] echo "$(date +'%H:%M')"
+      color = rgba(242, 243, 244, 0.75)
+      font_size = 95
+      font_family = JetBrains Mono Extrabold
+
+      position = 0, 200
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # PROFILE IMAGE
+  # -------------------------
+  image {
+      path = /home/akshay/Pictures/hk.png
+      size = 100
+      border_size = 2
+      border_color = rgba(255, 255, 255, 0.8)
+      rounding = 999 
+
+      position = 0, -50
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # USERNAME
+  # -------------------------
+  label {
+      text = cmd[update:1000] echo "hi there $(whoami)"
+      color = rgba(255, 255, 255, 0.8)
+      font_size = 14
+      font_family = JetBrains Mono
+
+      position = 0, -10
+      halign = center
+      valign = top
+  }
+  '';
+
+  xdg.configFile."hypr/hypridle.conf".text = ''
+      general {
+          ignore_dbus_inhibit = false
+          lock_cmd = hyprlock
+          before_sleep_cmd = hyprlock
+          after_sleep_cmd = hyprctl dispatch dpms on
+      }
+
+      # -------------------------
+      # 5 MIN → DIM SCREEN
+      # -------------------------
+      listener {
+          timeout = 300
+          on-timeout = brightnessctl -s set 40%
+          on-resume = brightnessctl -r
+      }
+
+      # -------------------------
+      # 10 MIN → LOCK SCREEN
+      # -------------------------
+      listener {
+          timeout = 600
+          on-timeout = hyprlock
+      }
+
+      # -------------------------
+      # 15 MIN → SUSPEND (BATTERY ONLY)
+      # -------------------------
+      listener {
+          timeout = 900
+          on-timeout = systemd-ac-power || systemctl suspend
+      }
+    '';
+
+
+    xdg.configFile."wleave/layout.json".text = ''
+    {
+      "button-layout": "grid",
+      "buttons-per-row": "3",
+
+      "margin": 200,
+      "column-spacing": 12,
+      "row-spacing": 12,
+
+      "close-on-lost-focus": true,
+      "protocol": "layer-shell",
+      "show-keybinds": false,
+      "no-version-info": true,
+
+      "buttons": [
+        {
+          "label": "lock",
+          "text": "Lock",
+          "action": "hyprlock",
+          "icon": "${pkgs.wleave}/share/wleave/icons/lock.svg",
+          "keybind": "l"
+        },
+        {
+          "label": "logout",
+          "text": "Logout",
+          "action": "loginctl terminate-user $USER",
+          "icon": "${pkgs.wleave}/share/wleave/icons/logout.svg",
+          "keybind": "o"
+        },
+        {
+          "label": "suspend",
+          "text": "Suspend",
+          "action": "systemctl suspend",
+          "icon": "${pkgs.wleave}/share/wleave/icons/suspend.svg",
+          "keybind": "s"
+        },
+        {
+          "label": "reboot",
+          "text": "Restart",
+          "action": "systemctl reboot",
+          "icon": "${pkgs.wleave}/share/wleave/icons/reboot.svg",
+          "keybind": "r"
+        },
+        {
+          "label": "poweroff",
+          "text": "Power",
+          "action": "systemctl poweroff",
+          "icon": "${pkgs.wleave}/share/wleave/icons/shutdown.svg",
+          "keybind": "p"
+        }
+      ]
+    }
+    '';
+
+    xdg.configFile."swaync/config.json".text = builtins.toJSON {
+      positionX = "right";
+      positionY = "top";
+      position = "center";
+      layer = "overlay";
+
+      "control-center-layer" = "top";
+      "layer-shell" = true;
+
+      "control-center-width" = 400;
+      "control-center-height" = 850;
+
+      "control-center-margin-top" = 10;
+      "control-center-margin-bottom" = 10;
+      "control-center-margin-right" = 10;
+      "control-center-margin-left" = 0;
+
+      "notification-window-width" = 380;
+      "notification-icon-size" = 50;
+
+      timeout = 5;
+      "timeout-low" = 6;
+      "timeout-critical" = 0;
+
+      "fit-to-screen" = true;
+      "keyboard-shortcuts" = true;
+
+      "hide-on-clear" = false;
+      "hide-on-action" = true;
+
+      "text-empty" = "No Notifications";
+
+      widgets = [
+        "volume"
+        "backlight"
+        "dnd"
+        "title"
+        "notifications"
+        "mpris"
+      ];
+
+      "widget-config" = {
+        mpris = {
+          "image-radius" = 0;
+          autohide = true;
+          blacklist = [ "playerctld" ];
+        };
+
+        volume = {
+          label = "󰕾";
+          "show-per-app" = true;
+          "show-per-app-icon" = true;
+        };
+
+        backlight = {
+          label = "󰃞";
+        };
+
+        dnd = {
+          text = "Do Not Disturb";
+        };
+
+        title = {
+          text = "Notifications Center";
+          "clear-all-button" = true;
+          "button-text" = "󰆴";
+        };
+      };
+    };
+
+    xdg.configFile."swaync/style.css".text = ''
+          /* -----------------------------------
+      🟤 Catppuccin Mocha – Crust Palette
+    -------------------------------------- */
+    @define-color background rgba(18, 17, 27, 0.8);
+    @define-color background-alt rgba(18, 17, 27, 0.8);
+    @define-color background-faded rgba(18, 17, 27, 0.5);
+    /* @define-color background rgb(18, 17, 27); */
+    /* @define-color background-alt rgb(18, 17, 27); */
+    /* @define-color background-faded rgb(18, 17, 27); */
+
+    @define-color crust #11111b;
+    @define-color foreground #cdd6f4;
+    @define-color red #f38ba8;
+    @define-color green #a6e3a1;
+    @define-color yellow #f9e2af;
+    @define-color blue #89b4fa;
+    @define-color gray #313244;
+    @define-color select #585b70;
+
+    /* 🎵 MPRIS */
+    @define-color mpris-album-art-overlay rgba(0, 0, 0, 0.55);
+    @define-color mpris-button-hover rgba(0, 0, 0, 0.5);
+    @define-color mpris-button-bg @foreground;
+    @define-color mpris-button-fg @crust;
+
+    /* -----------------------------------
+      🔤 Global Defaults
+    -------------------------------------- */
+    * {
+      outline: none;
+      font-family: "JetBrainsMono Font";
+      font-size: 18px;
+      text-shadow: none;
+      color: @foreground;
+      background-color: transparent;
+      border-radius: 10px;
+      border: none
+    }
+
+    /* -----------------------------------
+      🧩 Control Center
+    -------------------------------------- */
+    .control-center {
+      background-color: alpha(@background, 1);
+      /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.65); */
+      box-shadow: none;
+      padding: 10px;
+      border: none
+        /* border-bottom: 9px solid @blue; */
+    }
+
+    .notification-row .notification-background {
+      border-radius: 10px;
+      margin: 5px 0 15px;
+    }
+
+    /* -----------------------------------
+      🔔 Notifications
+    -------------------------------------- */
+    .notification {
+      background-color: @background;
+      border: 1px solid alpha(@foreground, 0.05);
+      border-radius: 10px;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+      min-height: 50px;
+      box-shadow: none;
+    }
+
+    .notification .summary {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .notification .time {
+      font-size: 0.75rem;
+      color: alpha(@foreground, 0.6);
+    }
+
+    .notification .body {
+      font-size: 0.95rem;
+      color: @foreground;
+    }
+
+    .notification-action>button {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      background-color: @select;
+      color: @foreground;
+      border-radius: 2px;
+      border: none;
+      margin: 6px 6px 0 0;
+    }
+
+    .notification-action>button:hover {
+      background-color: @blue;
+    }
+
+    .notification-action>button:hover label {
+      background-color: @blue;
+      color: @crust;
+    }
+
+    /* Urgency */
+    .notification.critical {
+      border: none;
+      outline: none;
+      background: @red;
+      border-left: 9px solid red;
+    }
+
+    .notification.critical .title,
+    .notification.critical .body,
+    .notification.critical .summary {
+      color: alpha(@crust, 0.9);
+      font-weight: bold;
+    }
+
+    .notification.low,
+    .notification.normal {
+      border: none;
+      outline: none;
+      background-color: alpha(@background, 0.95);
+      border-left: 9px solid @blue;
+    }
+
+    /* -----------------------------------
+      🖼️ Image/Icon
+    -------------------------------------- */
+    .image {
+      margin-right: 10px;
+      min-width: 36px;
+      min-height: 36px;
+      border: none;
+    }
+
+    /* -----------------------------------
+      ❌ Close Buttons
+    -------------------------------------- */
+    .close-button {
+      background-color: @red;
+      border-radius: 8px;
+    }
+
+    .close-button label {
+      color: aliceblue;
+    }
+
+    .close-button:hover {
+      background-color:transparent;
+    }
+
+    /* -----------------------------------
+      🔃 Group Header Buttons
+    -------------------------------------- */
+    .notification-group-collapse-button,
+    .notification-group-close-all-button {
+      background-color: @gray;
+      color: @foreground;
+      border-radius: 6px;
+    }
+
+    .notification-group-collapse-button:hover {
+      background-color: @blue;
+      color: @crust;
+    }
+
+    .notification-group-close-all-button:hover {
+      background-color: @red;
+      color: @crust;
+    }
+
+    /* -----------------------------------
+      📊 Sliders (Volume/Brightness)
+    -------------------------------------- */
+    scale trough {
+      margin: 0 1rem;
+      background-color: @gray;
+      min-height: 8px;
+      min-width: 70px;
+
+      border-radius: 30px;
+    }
+
+    trough highlight {
+      background: @blue;
+
+      border-radius: 30px;
+    }
+
+    slider {
+      border-radius: 30px;
+      background-color: @foreground;
+    }
+
+    /* -----------------------------------
+      💬 Tooltip
+    -------------------------------------- */
+    tooltip {
+      background-color: @gray;
+      color: @foreground;
+    }
+
+    /* -----------------------------------
+      🔘 Buttons Grid
+    -------------------------------------- */
+    .widget-buttons-grid {
+      font-size: 1rem;
+      padding: 20px 20px 10px;
+    }
+
+    .widget-buttons-grid button {
+      background: @crust;
+      color: #fff;
+      border-radius: 50px;
+      min-width: 60px;
+      min-height: 30px;
+      margin: 0 3px;
+      padding: 6px;
+    }
+
+    .widget-buttons-grid button:hover {
+      background: @select;
+    }
+
+    .widget-buttons-grid button.toggle:checked {
+      background: @blue;
+    }
+
+    .widget-buttons-grid button.toggle:checked label {
+      background: @blue;
+      color: @background;
+    }
+
+
+    .widget-buttons-grid button.toggle:checked:hover {
+      background: alpha(@blue, 0.8);
+    }
+
+    /* -----------------------------------
+      🎵 MPRIS Player
+    -------------------------------------- */
+    .widget-mpris .widget-mpris-player {
+      padding: 6px;
+      margin: 6px 10px;
+      background-color: transparent;
+      box-shadow: none;
+      border-radius: 10px;
+    }
+
+    .widget-mpris label,
+    .widget-mpris-title,
+    .widget-mpris-subtitle {
+      color: @foreground;
+    }
+
+    .widget-mpris-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0 8px 8px;
+      text-align: center;
+    }
+
+    .widget-mpris-subtitle {
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .widget-mpris-album-art.art {
+      border-radius: 999px;
+      min-width: 128px;
+      min-height: 128px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      overflow: hidden;
+      box-shadow: none;
+      background: red;
+    }
+
+    picture.mpris-background {
+      opacity: 0;
+      background: none;
+      box-shadow: none;
+      border: none;
+    }
+
+
+    /* -----------------------------------
+      🔊 Volume Widget
+    -------------------------------------- */
+    .widget-volume {
+      padding: 6px 5px 5px;
+      font-size: 1.3rem;
+    }
+
+    .widget-volume button {
+      border: none;
+    }
+
+    /* -----------------------------------
+      🎚️ Per-App Volume
+    -------------------------------------- */
+    .per-app-volume {
+      padding: 4px 8px 8px;
+      margin: 0 8px 8px;
+    }
+
+    /* -----------------------------------
+      💡 Backlight
+    -------------------------------------- */
+    .widget-backlight {
+      padding: 0 0 3px 16px;
+      font-size: 1.1rem;
+    }
+
+    /* -----------------------------------
+      🔕 DND
+    -------------------------------------- */
+    .widget-dnd {
+      font-weight: bold;
+      padding: 15px 15px 15px;
+    }
+
+    .widget-dnd>switch {
+      background: @yellow;
+      border: none;
+      border-radius: 100px;
+      padding: 3px;
+    }
+
+    .widget-dnd>switch:checked {
+      background: @green;
+    }
+
+    .widget-dnd>switch slider {
+      background: @background;
+      border-radius: 12px;
+      min-width: 18px;
+      min-height: 18px;
+    }
+
+    /* -----------------------------------
+      🏷️ Title
+    -------------------------------------- */
+    .widget-title {
+      padding: 15px;
+      font-weight: bold;
+    }
+
+    .widget-title>label {
+      font-size: 1.5rem;
+    }
+
+    .widget-title>button {
+      background: @red;
+      border: none;
+      border-radius: 100px;
+      padding: 0 6px;
+      transition: all 0.7s ease;
+    }
+
+    .widget-title>button label {
+      color: @crust;
+    }
+
+    .widget-title>button:hover {
+      background: alpha(@red, 0.8);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.65);
+    }
+    '';
+
   
 }
