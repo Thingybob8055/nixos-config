@@ -32,7 +32,7 @@
     megasync
     fastfetch
     dconf-editor
-    flameshot
+    #flameshot
     xeyes
     wl-clipboard
     appimage-run
@@ -90,6 +90,8 @@
     google-fonts
     icomoon-feather
     nerd-fonts.iosevka
+    satty
+    grimblast
 
     #wofi
     #hyprlauncher
@@ -221,6 +223,24 @@
       fi
 
       swappy -f "$file"
+    '')
+
+    (writeShellScriptBin "screenshot-satty-file" ''
+      set -e
+
+      dir="$HOME/Pictures/Screenshots"
+      mkdir -p "$dir"
+
+      file="$dir/screen-$(date +%Y-%m-%d-%H-%M-%S).png"
+      mode="$1"
+
+      if [ "$mode" = "area" ]; then
+        grim -g "$(slurp)" "$file"
+      else
+        grim "$file"
+      fi
+
+      satty --filename "$file" --copy-command wl-copy
     '')
     
     (pkgs.writeShellScriptBin "hypr-lid" ''
