@@ -236,7 +236,7 @@
         if [[ "$EXTERNAL" -gt 0 ]]; then
           hyprctl keyword monitor eDP-1,disable
         else
-          hyprlock
+          loginctl lock-session
           sleep 0.5
           systemctl suspend -i
         fi
