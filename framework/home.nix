@@ -1546,7 +1546,7 @@ xdg.configFile."hypr/hyprlock.conf".text = ''
       # -------------------------
       listener {
           timeout = 300
-          on-timeout = brightnessctl -s set 40%
+          on-timeout = brightnessctl -s set 30%
           on-resume = brightnessctl -r
       }
 
