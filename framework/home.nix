@@ -92,6 +92,7 @@
     nerd-fonts.iosevka
     satty
     grimblast
+    hyprlandPlugins.hyprsplit
 
     #wofi
     #hyprlauncher
@@ -671,6 +672,10 @@
       include ${pkgs.kitty-themes}/share/kitty-themes/themes/adwaita_dark.conf
     '';
   };
+
+  home.file.".config/hypr/plugins.conf".text = ''
+    plugin = ${pkgs.hyprlandPlugins.hyprsplit}/lib/libhyprsplit.so
+ '';
 
   programs.rofi = {
     enable = true;
