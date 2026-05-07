@@ -98,6 +98,7 @@
     #hyprlauncher
     swayosd
     jq
+    nwg-drawer
 
     # (pkgs.catppuccin-gtk.override {
     #   accents = [ "blue" ]; # Choose your accent
@@ -676,6 +677,50 @@
   home.file.".config/hypr/plugins.conf".text = ''
     plugin = ${pkgs.hyprlandPlugins.hyprsplit}/lib/libhyprsplit.so
  '';
+
+  home.file.".config/nwg-drawer/drawer.css".text = ''
+    window {
+    background-color: rgba(20, 20, 20, 0.55);
+    color: #eeeeee
+    }
+
+    /* search entry */
+    entry {
+        background-color: rgba(0, 0, 0, 0.2)
+    }
+
+    button, image {
+        background: none;
+        border: none
+    }
+
+    button:hover {
+        background-color: rgba(255, 255, 255, 0.1)
+    }
+
+    /* in case you wanted to give category buttons a different look */
+    #category-button {
+        margin: 0 10px 0 10px
+    }
+
+    #pinned-box {
+        padding-bottom: 5px;
+        border-bottom: 1px dotted gray
+    }
+
+    #files-box {
+        padding: 5px;
+        border: 1px dotted gray;
+        border-radius: 15px
+    }
+
+    /* math operation result label */
+    #math-label {
+        font-weight: bold;
+        font-size: 16px
+    }
+  '';
+
 
   programs.rofi = {
     enable = true;
