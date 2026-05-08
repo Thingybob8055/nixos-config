@@ -125,8 +125,8 @@
   services.logind = {
     settings = {
       Login = {
-        HandlePowerKey = "ignore";
-        HandleSuspendKey = "ignore";
+        HandlePowerKey = "suspend";
+        HandleSuspendKey = "suspend";
         HandleLidSwitch = "ignore";
         HandleLidSwitchExternalPower = "ignore";
         HandleLidSwitchDocked = "ignore";
