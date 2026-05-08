@@ -348,6 +348,18 @@
     startupNotify = true;
  };
 
+  xdg.desktopEntries.cockos-reaper = {
+      name = "REAPER";
+      comment = "REAPER DAW";
+      exec = "bash -lc reaper";
+      icon = "${pkgs.reaper}/share/icons/hicolor/256x256/apps/cockos-reaper.png";
+      terminal = false;
+
+      categories = ["Audio" "Video" "AudioVideo" "AudioVideoEditing" "Music" ];
+
+      startupNotify = true;
+    };
+
   home.sessionPath = [ "/home/akshay/.local/share/yabridge" ];
 
   home.file.".config/pop-shell/config.json".text = builtins.toJSON {
