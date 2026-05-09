@@ -41,7 +41,7 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     # exec-once = $terminal
     # exec-once = nm-applet &
     # exec-once = waybar & hyprpaper & firefox
-    exec-once = waybar &
+    #exec-once = waybar
     exec-once = swaync
     exec-once = nm-applet --indicator
     exec-once = blueman-applet
@@ -68,6 +68,8 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     exec-once = nwg-drawer -r
 
     exec-once = systemctl --user start battery-alert
+
+    exec-once = systemctl --user start waybar
 
     source = ~/.config/hypr/plugins.conf
 
