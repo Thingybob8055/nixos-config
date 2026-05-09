@@ -196,6 +196,7 @@
       #tray,
       #window,
       #mpris,
+      #custom-notifications,
       #custom-power {
         padding: 0.3rem 0.7rem;
         margin: 0.3rem 0.2rem;
