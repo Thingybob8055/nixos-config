@@ -718,6 +718,7 @@
   myAliases = {
     dev-rust = "nix develop /etc/nixos\#rust-dev";
     dev-embed = "nix develop /etc/nixos\#embed-dev";
+    nix-rebuild = "sudo nixos-rebuild switch --flake /home/akshay/Documents/nixos-config#default";
     #ls = "eza --icons -l -T -L=1";
     #cat = "bat";
     #htop = "btm";
