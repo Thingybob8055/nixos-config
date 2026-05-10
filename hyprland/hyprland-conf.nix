@@ -14,6 +14,7 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     monitor=eDP-1,2000x1333@120,auto,auto
     monitor=DP-1,2560x1440,0x0,auto
     monitor=DP-4,1920x1080,2560x218,auto
+    monitor=,preferred,auto,1
 
 
     ###################
@@ -487,6 +488,8 @@ xdg.configFile."hypr/hyprland.conf".text = ''
 
     bind = SUPER CTRL, left, split:movetoworkspace, -1
     bind = SUPER CTRL, right, split:movetoworkspace, +1
+
+    bind = SUPER SHIFT, R, exec, hyprctl reload
 
     bind = SUPER, R, exec, hyprctl dispatch submap resize; hyprctl keyword general:col.active_border "rgba(ffaa00ff) rgba(ffaa00ff) 45deg"
     submap = resize
