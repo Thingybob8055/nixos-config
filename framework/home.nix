@@ -267,6 +267,51 @@
       fi
       '')
 
+      (pkgs.writeShellScriptBin "custom-workspace" ''
+          #!/usr/bin/env bash
+
+          direction="$1"
+
+          current=$(hyprctl activeworkspace -j | jq '.id')
+
+          mapfile -t workspaces < <(
+            hyprctl workspaces -j | jq -r '
+              map(select(.windows > 0)) | sort_by(.id) | .[].id
+            '
+          )
+
+          len=''${#workspaces[@]}
+
+          # find current index
+          for i in "''${!workspaces[@]}"; do
+            if [[ "''${workspaces[$i]}" -eq "$current" ]]; then
+              index=$i
+              break
+            fi
+          done
+
+          if [[ "$direction" == "next" ]]; then
+            target_index=$(( (index + 1) % len ))
+          else
+            target_index=$(( (index - 1 + len) % len ))
+          fi
+
+          hyprctl dispatch workspace "''${workspaces[$target_index]}"
+        '')
+      
+      (pkgs.writeShellScriptBin "hypr-move-all" ''
+          #!/usr/bin/env bash
+
+          TARGET="$1"
+          CUR=$(hyprctl activeworkspace -j | jq '.id')
+
+          hyprctl clients -j | \
+          jq -r ".[] | select(.workspace.id == $CUR) | \"dispatch split:movetoworkspace $TARGET,address:\(.address)\"" | \
+          while read -r cmd; do
+              hyprctl $cmd
+          done
+        '')
+
 
     gnomeExtensions.blur-my-shell
     gnomeExtensions.appindicator

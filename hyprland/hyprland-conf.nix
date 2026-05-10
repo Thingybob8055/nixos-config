@@ -502,6 +502,20 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     bind = , Escape, submap, reset
     submap = reset
 
+    bind = SUPER, J, exec, custom-workspace prev
+    bind = SUPER, K, exec, custom-workspace next
+
+    bind = SUPER SHIFT CTRL, 1, exec, hypr-move-all 1
+    bind = SUPER SHIFT CTRL, 2, exec, hypr-move-all 2
+    bind = SUPER SHIFT CTRL, 3, exec, hypr-move-all 3
+    bind = SUPER SHIFT CTRL, 4, exec, hypr-move-all 4
+    bind = SUPER SHIFT CTRL, 5, exec, hypr-move-all 5
+    bind = SUPER SHIFT CTRL, 6, exec, hypr-move-all 6
+    bind = SUPER SHIFT CTRL, 7, exec, hypr-move-all 7
+    bind = SUPER SHIFT CTRL, 8, exec, hypr-move-all 8
+    bind = SUPER SHIFT CTRL, 9, exec, hypr-move-all 9
+    bind = SUPER SHIFT CTRL, 0, exec, hypr-move-all 10
+
     ##############################
     ### WINDOWS AND WORKSPACES ###
     ##############################
