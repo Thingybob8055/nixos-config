@@ -11,7 +11,7 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     ################
 
     # See https://wiki.hypr.land/Configuring/Monitors/
-    monitor=eDP-1,2000x1333@120,600x1440,auto
+    monitor=eDP-1,2000x1333@120,auto,auto
     monitor=DP-1,2560x1440,0x0,auto
     monitor=DP-4,1920x1080,2560x218,auto
 
@@ -104,6 +104,9 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     # permission = /usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland, screencopy, allow
     # permission = /usr/(bin|local/bin)/hyprpm, plugin, allow
 
+    #cursor {
+    #  no_hardware_cursors = true
+    #}
 
     #####################
     ### LOOK AND FEEL ###
