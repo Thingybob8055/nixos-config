@@ -52,7 +52,6 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     exec-once = awww img .wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
     exec-once = awww img --outputs DP-1 .wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
     exec-once = awww img --outputs DP-4 .wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
-    exec-once = hyprshell run &
     exec-once = systemctl --user start hyprpolkitagent
     exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 
@@ -70,6 +69,9 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     exec-once = systemctl --user start battery-alert
 
     exec-once = systemctl --user start waybar
+
+    exec-once = systemctl --user start hyprshell
+    #exec-once = hyprshell run &
 
     source = ~/.config/hypr/plugins.conf
 

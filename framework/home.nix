@@ -73,7 +73,6 @@
     copyq
     hyprlock
     hypridle
-    hyprshell
     # sherlock-launcher
 
     adw-gtk3
