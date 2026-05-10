@@ -468,6 +468,7 @@
     ../hyprland/swaync.nix
     ../hyprland/battery-notif.nix
     ../hyprland/hypridle.nix
+    ../hyprland/hyprshell.nix
   ];
   
   dconf = {

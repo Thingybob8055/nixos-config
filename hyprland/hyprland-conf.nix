@@ -201,6 +201,27 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     layerrule = blur on, match:namespace nwg-drawer
     layerrule = ignore_alpha 0, match:namespace nwg-drawer
 
+    layerrule {
+        name = hyprshell_overview
+        blur = on
+        ignore_alpha = 0
+        match:namespace = hyprshell_overview
+    }
+
+    layerrule {
+        name = hyprshell_switch
+        blur = on
+        ignore_alpha = 0
+        match:namespace = hyprshell_switch
+    }
+
+    layerrule {
+        name = hyprshell_launcher
+        blur = on
+        ignore_alpha = 0
+        match:namespace = hyprshell_launcher
+    }
+
     # https://wiki.hypr.land/Configuring/Variables/#animations
     animations {
         enabled = yes, please :)
