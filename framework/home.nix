@@ -96,6 +96,8 @@
     jq
     sound-theme-freedesktop
 
+    zerotierone
+
     # (pkgs.catppuccin-gtk.override {
     #   accents = [ "blue" ]; # Choose your accent
     #   size = "standard";
