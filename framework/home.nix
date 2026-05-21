@@ -97,6 +97,7 @@
     sound-theme-freedesktop
 
     zerotierone
+    vital
 
     # (pkgs.catppuccin-gtk.override {
     #   accents = [ "blue" ]; # Choose your accent
@@ -358,6 +359,15 @@
     #   echo "Hello, ${config.home.username}!"
     # '')
   ];
+
+  home.file.".vst3/Vital.vst3".source =
+    "${pkgs.vital}/lib/vst3/Vital.vst3";
+
+  home.file.".vst/Vital.so".source =
+    "${pkgs.vital}/lib/vst/Vital.so";
+
+  home.file.".clap/Vital.clap".source =
+    "${pkgs.vital}/lib/clap/Vital.clap";
 
   # Now add the xdg.desktopEntries block outside of home.packages
   xdg.desktopEntries.moises = {
