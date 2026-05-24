@@ -1,10 +1,8 @@
 { config, pkgs, inputs, pkgs-stable, ... }:
 {
-   home.packages = with pkgs; [
-      hyprshell
+    home.packages = with pkgs; [
+      pkgs.hyprshell
     ];
-    
-    services.hyprshell.enable = true;
 
     xdg.configFile."hyprshell/styles.css".text = ''
     :root {
