@@ -44,9 +44,10 @@
     equibop
     davinci-resolve
     ffmpeg
-    (pkgs.bottles.override {
+    (pkgs-stable.bottles.override {
     removeWarningPopup = true;
     })
+    # pkgs-stable.bottles
     
     wdisplays
     brightnessctl
@@ -88,7 +89,6 @@
     nerd-fonts.iosevka
     satty
     grimblast
-    hyprlandPlugins.hyprsplit
 
     #wofi
     #hyprlauncher
@@ -98,6 +98,21 @@
 
     zerotierone
     vital
+
+    dejavu_fonts
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+    pkgs.inter
+
+    thunar
+    thunar-archive-plugin
+    thunar-media-tags-plugin
+    thunar-vcs-plugin
+    thunar-volman
+    tumbler
+    ffmpegthumbnailer
+    file-roller
 
     # (pkgs.catppuccin-gtk.override {
     #   accents = [ "blue" ]; # Choose your accent
@@ -255,7 +270,7 @@
 
       if [[ "$EVENT" == "close" ]]; then
         if [[ "$EXTERNAL" -gt 0 ]]; then
-          hyprctl keyword monitor eDP-1,disable
+          hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = true })'
         else
           loginctl lock-session
           sleep 0.5
@@ -270,50 +285,6 @@
       fi
       '')
 
-      (pkgs.writeShellScriptBin "custom-workspace" ''
-          #!/usr/bin/env bash
-
-          direction="$1"
-
-          current=$(hyprctl activeworkspace -j | jq '.id')
-
-          mapfile -t workspaces < <(
-            hyprctl workspaces -j | jq -r '
-              map(select(.windows > 0)) | sort_by(.id) | .[].id
-            '
-          )
-
-          len=''${#workspaces[@]}
-
-          # find current index
-          for i in "''${!workspaces[@]}"; do
-            if [[ "''${workspaces[$i]}" -eq "$current" ]]; then
-              index=$i
-              break
-            fi
-          done
-
-          if [[ "$direction" == "next" ]]; then
-            target_index=$(( (index + 1) % len ))
-          else
-            target_index=$(( (index - 1 + len) % len ))
-          fi
-
-          hyprctl dispatch workspace "''${workspaces[$target_index]}"
-        '')
-      
-      (pkgs.writeShellScriptBin "hypr-move-all" ''
-          #!/usr/bin/env bash
-
-          TARGET="$1"
-          CUR=$(hyprctl activeworkspace -j | jq '.id')
-
-          hyprctl clients -j | \
-          jq -r ".[] | select(.workspace.id == $CUR) | \"dispatch split:movetoworkspace $TARGET,address:\(.address)\"" | \
-          while read -r cmd; do
-              hyprctl $cmd
-          done
-        '')
 
 
     gnomeExtensions.blur-my-shell
@@ -340,7 +311,7 @@
      };
     }))
     
-    pkgs-stable.nerdfonts
+    # pkgs-stable.nerdfonts
     pkgs-stable.fira
     pkgs-stable.roboto
     pkgs-stable.corefonts
@@ -411,6 +382,57 @@
 
       startupNotify = true;
     };
+
+
+  xdg.configFile = {
+  "hypr/hyprsplit" = {
+    source = "${inputs.hyprsplit.packages.${pkgs.stdenv.hostPlatform.system}.hyprsplitlua}/share/hyprsplit";
+    recursive = true;
+    };
+  };
+
+  xdg.configFile."xfce4/helpers.rc".text = ''
+    TerminalEmulator=kitty
+  '';
+
+  xdg.configFile."Thunar/uca.xml".text = ''
+    <?xml version="1.0" encoding="UTF-8"?>
+    <actions>
+
+      <action>
+        <icon>code</icon>
+        <name>Open Folder in VSCode</name>
+        <command>code %f</command>
+        <patterns>*</patterns>
+        <directories/>
+      </action>
+
+      <action>
+        <icon>terminal</icon>
+        <name>Open Terminal Here</name>
+        <command>kitty --directory=%f</command>
+        <patterns>*</patterns>
+        <directories/>
+     </action>
+
+    </actions>
+    '';
+
+   xdg.configFile."mimeapps.list".force = true;
+   xdg.mimeApps = {
+  enable = true;
+
+  defaultApplications = {
+    "application/pdf" = "org.gnome.Papers.desktop";
+    "image/png" = "org.gnome.Loupe.desktop";
+    "image/jpeg" = "org.gnome.Loupe.desktop";
+    "image/jpg" = "org.gnome.Loupe.desktop";
+    "image/webp" = "org.gnome.Loupe.desktop";
+    "image/gif" = "org.gnome.Loupe.desktop";
+    "inode/directory" = "thunar.desktop";
+    "x-directory/normal" = "thunar.desktop";
+  };
+};
 
   home.sessionPath = [ "/home/akshay/.local/share/yabridge" ];
 
@@ -491,6 +513,7 @@
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
     QT_QPA_PLATFORMTHEME = "qt6ct";
+    FILE_MANAGER = "thunar";
     # QT_STYLE_OVERRIDE = "Adwaita-Dark";
   };
 
@@ -533,6 +556,7 @@
      "org/gnome/desktop/interface" = {
       icon-theme = "Adwaita";  # Use any installed theme like 'Papirus', 'Breeze', etc.
       cursor-theme = "Adwaita";  # Set the cursor theme declaratively
+      color-scheme = "prefer-dark";
       gtk-theme = "Adwaita-dark";
     };
   
