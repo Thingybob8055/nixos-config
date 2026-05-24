@@ -74,8 +74,6 @@ hl.on("hyprland.start", function()
     --for gtk3 apps you need to install adw-gtk3 theme
     hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme \"adw-gtk3-dark\" ")
 
-    hl.exec_cmd("nwg-drawer -r")
-
     hl.exec_cmd("systemctl --user start battery-alert")
 
     hl.exec_cmd("systemctl --user start waybar")
@@ -84,6 +82,8 @@ hl.on("hyprland.start", function()
 
     hl.exec_cmd("systemctl --user start hyprshell")
     hl.exec_cmd("hyprshell run")
+
+    -- hl.exec_cmd("nwg-drawer -r")
 end)
 
 
@@ -406,7 +406,7 @@ hl.bind(mainMod .. " + SHIFT + M",
     })
 )
 
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("nwg-drawer"))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("nwg-drawer && nwg-drawer -r"))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
