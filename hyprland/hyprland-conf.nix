@@ -2,10 +2,9 @@
 {
 
 home.file.".config/hypr/plugins.conf".text = ''
-    plugin = ${pkgs.hyprlandPlugins.hyprsplit}/lib/libhyprsplit.so
  '';
 
-xdg.configFile."hypr/hyprland.conf".text = ''
+xdg.configFile."hypr/hyprland-old.conf".text = ''
     ################
     ### MONITORS ###
     ################
@@ -50,9 +49,9 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     exec-once = copyq --start-server
     exec-once = hypridle
     exec-once = awww-daemon
-    exec-once = awww img .wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
-    exec-once = awww img --outputs DP-1 .wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
-    exec-once = awww img --outputs DP-4 .wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
+    exec-once = awww img ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
+    exec-once = awww img --outputs DP-1 ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
+    exec-once = awww img --outputs DP-4 ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
     exec-once = systemctl --user start hyprpolkitagent
     exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 
@@ -71,7 +70,7 @@ xdg.configFile."hypr/hyprland.conf".text = ''
 
     exec-once = systemctl --user start waybar
 
-    exec-once = systemctl --user start hyprshell
+    #exec-once = systemctl --user start hyprshell
     #exec-once = hyprshell run &
 
     source = ~/.config/hypr/plugins.conf
@@ -185,7 +184,7 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     match:namespace = wleave
     }
 
-    layerrule = blur on, match:namespace rofi
+    #layerrule = blur on, match:namespace rofi
     #layerrule = match:namespace rofi, xray on 
 
     layerrule = animation slide right, match:namespace swaync-control-center
@@ -207,26 +206,26 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     layerrule = blur on, match:namespace nwg-drawer
     layerrule = ignore_alpha 0, match:namespace nwg-drawer
 
-    layerrule {
-        name = hyprshell_overview
-        blur = on
-        ignore_alpha = 0
-        match:namespace = hyprshell_overview
-    }
+    # layerrule {
+    #     name = hyprshell_overview
+    #     blur = on
+    #     ignore_alpha = 0
+    #     match:namespace = hyprshell_overview
+    # }
 
-    layerrule {
-        name = hyprshell_switch
-        blur = on
-        ignore_alpha = 0
-        match:namespace = hyprshell_switch
-    }
+    # layerrule {
+    #     name = hyprshell_switch
+    #     blur = on
+    #     ignore_alpha = 0
+    #     match:namespace = hyprshell_switch
+    # }
 
-    layerrule {
-        name = hyprshell_launcher
-        blur = on
-        ignore_alpha = 0
-        match:namespace = hyprshell_launcher
-    }
+    # layerrule {
+    #     name = hyprshell_launcher
+    #     blur = on
+    #     ignore_alpha = 0
+    #     match:namespace = hyprshell_launcher
+    # }
 
     # https://wiki.hypr.land/Configuring/Variables/#animations
     animations {
@@ -286,7 +285,7 @@ xdg.configFile."hypr/hyprland.conf".text = ''
 
     # See https://wiki.hypr.land/Configuring/Dwindle-Layout/ for more
     dwindle {
-        pseudotile = true # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
+        #pseudotile = true # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
         preserve_split = true # You probably want this
     }
 
@@ -364,50 +363,50 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     bind = $mainMod, down, movefocus, d
 
     # Switch workspaces with mainMod + [0-9]
-    #bind = $mainMod, 1, workspace, 1
-    #bind = $mainMod, 2, workspace, 2
-    #bind = $mainMod, 3, workspace, 3
-    #bind = $mainMod, 4, workspace, 4
-    #bind = $mainMod, 5, workspace, 5
-    #bind = $mainMod, 6, workspace, 6
-    #bind = $mainMod, 7, workspace, 7
-    #bind = $mainMod, 8, workspace, 8
-    #bind = $mainMod, 9, workspace, 9
-    #bind = $mainMod, 0, workspace, 10
+    bind = $mainMod, 1, workspace, 1
+    bind = $mainMod, 2, workspace, 2
+    bind = $mainMod, 3, workspace, 3
+    bind = $mainMod, 4, workspace, 4
+    bind = $mainMod, 5, workspace, 5
+    bind = $mainMod, 6, workspace, 6
+    bind = $mainMod, 7, workspace, 7
+    bind = $mainMod, 8, workspace, 8
+    bind = $mainMod, 9, workspace, 9
+    bind = $mainMod, 0, workspace, 10
 
     # Move active window to a workspace with mainMod + SHIFT + [0-9]
-    #bind = $mainMod SHIFT, 1, movetoworkspace, 1
-    #bind = $mainMod SHIFT, 2, movetoworkspace, 2
-    #bind = $mainMod SHIFT, 3, movetoworkspace, 3
-    #bind = $mainMod SHIFT, 4, movetoworkspace, 4
-    #bind = $mainMod SHIFT, 5, movetoworkspace, 5
-    #bind = $mainMod SHIFT, 6, movetoworkspace, 6
-    #bind = $mainMod SHIFT, 7, movetoworkspace, 7
-    #bind = $mainMod SHIFT, 8, movetoworkspace, 8
-    #bind = $mainMod SHIFT, 9, movetoworkspace, 9
-    #bind = $mainMod SHIFT, 0, movetoworkspace, 10
+    bind = $mainMod SHIFT, 1, movetoworkspace, 1
+    bind = $mainMod SHIFT, 2, movetoworkspace, 2
+    bind = $mainMod SHIFT, 3, movetoworkspace, 3
+    bind = $mainMod SHIFT, 4, movetoworkspace, 4
+    bind = $mainMod SHIFT, 5, movetoworkspace, 5
+    bind = $mainMod SHIFT, 6, movetoworkspace, 6
+    bind = $mainMod SHIFT, 7, movetoworkspace, 7
+    bind = $mainMod SHIFT, 8, movetoworkspace, 8
+    bind = $mainMod SHIFT, 9, movetoworkspace, 9
+    bind = $mainMod SHIFT, 0, movetoworkspace, 10
 
-    bind = SUPER, 1, split:workspace, 1
-    bind = SUPER, 2, split:workspace, 2
-    bind = SUPER, 3, split:workspace, 3
-    bind = SUPER, 4, split:workspace, 4
-    bind = SUPER, 5, split:workspace, 5
-    bind = SUPER, 6, split:workspace, 6
-    bind = SUPER, 7, split:workspace, 7
-    bind = SUPER, 8, split:workspace, 8
-    bind = SUPER, 9, split:workspace, 9
-    bind = SUPER, 0, split:workspace, 10
+    # bind = SUPER, 1, split:workspace, 1
+    # bind = SUPER, 2, split:workspace, 2
+    # bind = SUPER, 3, split:workspace, 3
+    # bind = SUPER, 4, split:workspace, 4
+    # bind = SUPER, 5, split:workspace, 5
+    # bind = SUPER, 6, split:workspace, 6
+    # bind = SUPER, 7, split:workspace, 7
+    # bind = SUPER, 8, split:workspace, 8
+    # bind = SUPER, 9, split:workspace, 9
+    # bind = SUPER, 0, split:workspace, 10
 
-    bind = SUPER SHIFT, 1, split:movetoworkspace, 1
-    bind = SUPER SHIFT, 2, split:movetoworkspace, 2
-    bind = SUPER SHIFT, 3, split:movetoworkspace, 3
-    bind = SUPER SHIFT, 4, split:movetoworkspace, 4
-    bind = SUPER SHIFT, 5, split:movetoworkspace, 5
-    bind = SUPER SHIFT, 6, split:movetoworkspace, 6
-    bind = SUPER SHIFT, 7, split:movetoworkspace, 7
-    bind = SUPER SHIFT, 8, split:movetoworkspace, 8
-    bind = SUPER SHIFT, 9, split:movetoworkspace, 9
-    bind = SUPER SHIFT, 0, split:movetoworkspace, 10
+    # bind = SUPER SHIFT, 1, split:movetoworkspace, 1
+    # bind = SUPER SHIFT, 2, split:movetoworkspace, 2
+    # bind = SUPER SHIFT, 3, split:movetoworkspace, 3
+    # bind = SUPER SHIFT, 4, split:movetoworkspace, 4
+    # bind = SUPER SHIFT, 5, split:movetoworkspace, 5
+    # bind = SUPER SHIFT, 6, split:movetoworkspace, 6
+    # bind = SUPER SHIFT, 7, split:movetoworkspace, 7
+    # bind = SUPER SHIFT, 8, split:movetoworkspace, 8
+    # bind = SUPER SHIFT, 9, split:movetoworkspace, 9
+    # bind = SUPER SHIFT, 0, split:movetoworkspace, 10
 
     # Example special workspace (scratchpad)
     bind = $mainMod, W, togglespecialworkspace, magic
@@ -486,8 +485,8 @@ xdg.configFile."hypr/hyprland.conf".text = ''
     bind = SUPER SHIFT CTRL, up, movewindow, mon:u
     bind = SUPER SHIFT CTRL, down, movewindow, mon:d
 
-    bind = SUPER CTRL, left, split:movetoworkspace, -1
-    bind = SUPER CTRL, right, split:movetoworkspace, +1
+    #bind = SUPER CTRL, left, split:movetoworkspace, -1
+    #bind = SUPER CTRL, right, split:movetoworkspace, +1
 
     bind = SUPER SHIFT, R, exec, hyprctl reload
 
