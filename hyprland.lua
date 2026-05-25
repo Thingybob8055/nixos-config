@@ -424,6 +424,59 @@ for i = 1, 10 do
     hl.bind("SUPER + SHIFT + " .. key, hs.dsp.window.move({ workspace = i, follow = true }))
 end
 
+-- move to workspace +1/-1 with super ctrl left/right, if workspace +1 does not exist, create it and move there
+local function focus_or_create_workspace(direction, type)
+    local current_ws = hl.get_active_workspace()
+    if not current_ws then
+        return
+    end
+    
+    local current_id = current_ws.id
+    local target_id = direction == "next" and current_id + 1 or current_id - 1
+    
+    -- Check if target workspace exists
+    local target_ws = hl.get_workspace(target_id)
+    
+    if not target_ws then
+        -- Workspace doesn't exist, move a window there to create it, then focus it
+        local active_win = hl.get_active_window()
+        if active_win then
+            if type == "move" then
+                hl.dispatch(hs.dsp.window.move({ workspace = target_id, follow = true }))
+            else
+                hl.dispatch(hs.dsp.focus({ workspace = target_id, follow = true }))
+            end
+        else
+            -- No active window, use exec to create the workspace
+            hl.exec_cmd("hyprctl dispatch workspace " .. target_id)
+        end
+    else
+        -- Workspace exists, just focus it
+        if type == "move" then
+            hl.dispatch(hs.dsp.window.move({ workspace = target_id, follow = true }))
+        else
+            hl.dispatch(hs.dsp.focus({ workspace = target_id }))
+        end
+    end
+end
+
+hl.bind("SUPER + CTRL + right", function()
+    focus_or_create_workspace("next", "not_move")
+end)
+
+hl.bind("SUPER + CTRL + left", function()
+    focus_or_create_workspace("prev", "not_move")
+end)
+
+-- -- move to a windows to workspace +1/-1 with super ctrl alt left/right, if a workspace does 
+hl.bind("SUPER + CTRL + ALT + right", function()
+    focus_or_create_workspace("next", "move")
+end)
+
+hl.bind("SUPER + CTRL + ALT + left", function()
+    focus_or_create_workspace("prev", "move")
+end)
+
 -- Move all windows in current workspace to a target workspace
 
 local function move_all_windows_to_workspace(target)
