@@ -315,10 +315,10 @@
     }))
     
     # pkgs-stable.nerdfonts
-    pkgs-stable.fira
+    # pkgs-stable.fira
     pkgs-stable.roboto
     pkgs-stable.corefonts
-    pkgs-stable.neofetch
+    pkgs-stable.hyfetch
     
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
