@@ -1,4 +1,4 @@
-{config, pkgs, inputs, ... }:
+{config, pkgs, pkgs-stable, inputs, ... }:
 
 {
     hardware.graphics = {
@@ -27,7 +27,7 @@
 
   # Lutris
   environment.systemPackages = with pkgs; [
-    lutris
+    pkgs-stable.lutris
     mangohud
     wineWow64Packages.yabridge
     winetricks
@@ -36,6 +36,10 @@
     heroic
     steam-run
     vkbasalt
+
+    (openldap.overrideAttrs (old: {
+      doCheck = false;
+    }))
   ];
 
   # Gamepad support

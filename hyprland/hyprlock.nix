@@ -1,0 +1,119 @@
+{ config, pkgs, inputs, pkgs-stable, ... }:
+{
+
+    xdg.configFile."hypr/hyprlock.conf".text = ''
+  source = ~/.cache/wal/colors-hyprland.conf
+
+  # -------------------------
+  # BACKGROUND
+  # -------------------------
+  background {
+      monitor =
+      path = /home/akshay/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png
+
+      blur_passes = 2
+      contrast = 1
+      brightness = 0.5
+      vibrancy = 0.2
+      vibrancy_darkness = 0.2
+  }
+
+  # -------------------------
+  # GENERAL
+  # -------------------------
+  general {
+      no_fade_in = true
+      no_fade_out = true
+      hide_cursor = false
+      grace = 0
+      disable_loading_bar = true
+  }
+
+  # -------------------------
+  # INPUT FIELD
+  # -------------------------
+  input-field {
+      monitor =
+      size = 250, 60
+      outline_thickness = 2
+      dots_size = 0.2
+      dots_spacing = 0.35
+      dots_center = true
+
+      outer_color = rgba(0, 0, 0, 0)
+      inner_color = rgba(0, 0, 0, 0.2)
+      font_color = rgba(255, 255, 255, 0.9)
+
+      fade_on_empty = false
+      rounding = -1
+      check_color = rgb(204, 136, 34)
+
+      placeholder_text = Input Password...
+
+      hide_input = false
+
+      position = 0, -200
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # DATE
+  # -------------------------
+  label {
+      text = cmd[update:1000] echo "$(date +'%A, %B %d')"
+      color = rgba(242, 243, 244, 0.75)
+      font_size = 22
+      font_family = JetBrains Mono
+
+      position = 0, 300
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # TIME
+  # -------------------------
+  label {
+      text = cmd[update:1000] echo "$(date +'%H:%M')"
+      color = rgba(242, 243, 244, 0.75)
+      font_size = 95
+      font_family = JetBrains Mono Extrabold
+
+      position = 0, 200
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # PROFILE IMAGE
+  # -------------------------
+  image {
+      path = /home/akshay/.wallpapers/hk.png
+      size = 100
+      border_size = 2
+      border_color = rgba(255, 255, 255, 0.8)
+      rounding = 999 
+
+      position = 0, -50
+      halign = center
+      valign = center
+  }
+
+  # -------------------------
+  # USERNAME
+  # -------------------------
+  label {
+      text = cmd[update:1000] echo "hi there $(whoami)"
+      color = rgba(255, 255, 255, 0.8)
+      font_size = 14
+      font_family = JetBrains Mono
+
+      position = 0, -10
+      halign = center
+      valign = top
+  }
+  '';
+
+
+}
