@@ -574,6 +574,12 @@ hl.bind(mainMod .. " + S", hl.dsp.group.toggle())
 hl.bind("SUPER + ALT + RIGHT", hl.dsp.group.next())
 hl.bind("SUPER + ALT + LEFT", hl.dsp.group.prev())
 
+-- bind = ALT, Tab, global, tabber:select-next
+hl.bind("ALT + Tab", hl.dsp.global("tabber:select-next"))
+hl.bind("ALT + SHIFT + Tab", hl.dsp.global("tabber:select-previous"))
+hl.bind("ALT + Grave", hl.dsp.global("tabber:enter-group"))
+
+
 hl.bind(mainMod .. " + SHIFT + left",
     hl.dsp.window.move({
         direction = "left",
