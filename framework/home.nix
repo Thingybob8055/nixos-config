@@ -93,7 +93,7 @@
     #wofi
     #hyprlauncher
     # swayosd
-    # jq
+    jq
     # sound-theme-freedesktop
 
     zerotierone

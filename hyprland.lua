@@ -54,17 +54,18 @@ local menu        =
 -- Or execute your favorite apps at launch like this:
 --
 hl.on("hyprland.start", function()
+    hl.exec_cmd("noctalia-shell")
     --   hl.exec_cmd(terminal)
-    hl.exec_cmd("nm-applet --indicator")
-    hl.exec_cmd("swaync")
-    hl.exec_cmd("blueman-applet")
-    hl.exec_cmd("wl-paste --watch cliphist store")
+    --hl.exec_cmd("nm-applet --indicator")
+    --hl.exec_cmd("swaync")
+    --hl.exec_cmd("blueman-applet")
+    -- hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("copyq --start-server")
-    hl.exec_cmd("hypridle")
-    hl.exec_cmd("awww-daemon")
-    hl.exec_cmd("awww img ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png")
-    hl.exec_cmd("awww img --outputs DP-1 ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png")
-    hl.exec_cmd("awww img --outputs DP-4 ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png")
+    --hl.exec_cmd("hypridle")
+    --hl.exec_cmd("awww-daemon")
+    --hl.exec_cmd("awww img ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png")
+    --hl.exec_cmd("awww img --outputs DP-1 ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png")
+   -- hl.exec_cmd("awww img --outputs DP-4 ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png")
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("gnome-keyring-daemon --start --components=pkcs11,secrets,ssh")
 
@@ -74,14 +75,14 @@ hl.on("hyprland.start", function()
     --for gtk3 apps you need to install adw-gtk3 theme
     hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme \"adw-gtk3-dark\" ")
 
-    hl.exec_cmd("systemctl --user start battery-alert")
+    --hl.exec_cmd("systemctl --user start battery-alert")
 
-    hl.exec_cmd("systemctl --user start waybar")
+    --hl.exec_cmd("systemctl --user start waybar")
     -- hl.exec_cmd("systemctl --user start swayosd")
-    hl.exec_cmd("swayosd-server")
+    --hl.exec_cmd("swayosd-server")
 
-    hl.exec_cmd("systemctl --user start hyprshell")
-    hl.exec_cmd("hyprshell run")
+    --hl.exec_cmd("systemctl --user start hyprshell")
+    --hl.exec_cmd("hyprshell run")
 
     -- hl.exec_cmd("nwg-drawer -r")
 end)
@@ -193,67 +194,76 @@ hl.window_rule({
     opacity = "0.95 0.95"
 })
 
-hl.layer_rule({
-    name       = "wleave-blur",
-    match      = { namespace = "wleave" },
-    blur       = true,
-    dim_around = true,
-})
+-- hl.layer_rule({
+--     name       = "wleave-blur",
+--     match      = { namespace = "wleave" },
+--     blur       = true,
+--     dim_around = true,
+-- })
+
+-- hl.layer_rule({
+--     name         = "swaync-blur",
+--     match        = { namespace = "swaync-control-center" },
+--     blur         = true,
+--     animation    = "slide right",
+--     ignore_alpha = 0,
+-- })
+
+-- hl.layer_rule({
+--     name         = "swaync-notif",
+--     match        = { namespace = "swaync-notification-window" },
+--     blur         = true,
+--     animation    = "slide right",
+--     ignore_alpha = 0,
+-- })
+
+-- hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
+
+-- hl.layer_rule({
+--     name         = "swayosd-blur",
+--     match        = { namespace = "swayosd" },
+--     blur         = true,
+--     ignore_alpha = 0,
+-- })
+
+-- hl.layer_rule({
+--     name         = "nwgdraw-blur",
+--     match        = { namespace = "nwg-drawer" },
+--     blur         = true,
+--     ignore_alpha = 0,
+-- })
+
+-- hl.layer_rule({
+--     name         = "hyprshell_overview_blur",
+--     match        = { namespace = "hyprshell_overview" },
+--     blur         = true,
+--     -- animation = "slide right",
+--     ignore_alpha = 0,
+-- })
+
+-- hl.layer_rule({
+--     name         = "hyprshell_switch_blur",
+--     match        = { namespace = "hyprshell_switch" },
+--     blur         = true,
+--     -- animation = "slide right",
+--     ignore_alpha = 0,
+-- })
+
+-- hl.layer_rule({
+--     name         = "hyprshell_launcher_blur",
+--     match        = { namespace = "hyprshell_launcher" },
+--     blur         = true,
+--     -- animation = "slide right",
+--     ignore_alpha = 0,
+-- })
 
 hl.layer_rule({
-    name         = "swaync-blur",
-    match        = { namespace = "swaync-control-center" },
-    blur         = true,
-    animation    = "slide right",
-    ignore_alpha = 0,
-})
-
-hl.layer_rule({
-    name         = "swaync-notif",
-    match        = { namespace = "swaync-notification-window" },
-    blur         = true,
-    animation    = "slide right",
-    ignore_alpha = 0,
-})
-
-hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
-
-hl.layer_rule({
-    name         = "swayosd-blur",
-    match        = { namespace = "swayosd" },
-    blur         = true,
-    ignore_alpha = 0,
-})
-
-hl.layer_rule({
-    name         = "nwgdraw-blur",
-    match        = { namespace = "nwg-drawer" },
-    blur         = true,
-    ignore_alpha = 0,
-})
-
-hl.layer_rule({
-    name         = "hyprshell_overview_blur",
-    match        = { namespace = "hyprshell_overview" },
+    name         = "noctalia-blur",
+    match        = { namespace = "noctalia-background-.*$" },
     blur         = true,
     -- animation = "slide right",
-    ignore_alpha = 0,
-})
-
-hl.layer_rule({
-    name         = "hyprshell_switch_blur",
-    match        = { namespace = "hyprshell_switch" },
-    blur         = true,
-    -- animation = "slide right",
-    ignore_alpha = 0,
-})
-
-hl.layer_rule({
-    name         = "hyprshell_launcher_blur",
-    match        = { namespace = "hyprshell_launcher" },
-    blur         = true,
-    -- animation = "slide right",
-    ignore_alpha = 0,
+    ignore_alpha = 0.5,
+    blur_popups = true
 })
 
 
@@ -389,7 +399,9 @@ local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + G", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
+-- hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("noctalia-shell ipc call launcher toggle"))
+hl.bind(mainMod .. " + comma", hl.dsp.exec_cmd("noctalia-shell ipc call settings toggle"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + O", hl.dsp.layout("togglesplit")) -- dwindle only
 hl.bind(mainMod .. " + M",
@@ -406,7 +418,7 @@ hl.bind(mainMod .. " + SHIFT + M",
     })
 )
 
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("nwg-drawer -i breeze && nwg-drawer -i breeze -r"))
+-- hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("nwg-drawer -i breeze && nwg-drawer -i breeze -r"))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
@@ -521,12 +533,20 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Laptop multimedia keys for volume and LCD brightness
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume +5"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume -5"), { locked = true, repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"),
-    { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness +5"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness -5"), { locked = true, repeating = true })
+-- hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume +5"), { locked = true, repeating = true })
+-- hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume -5"), { locked = true, repeating = true })
+-- hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"),
+--     { locked = true, repeating = true })
+-- hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness +5"), { locked = true, repeating = true })
+-- hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness -5"), { locked = true, repeating = true })
+
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia-shell ipc call volume increase"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("noctalia-shell ipc call volume decrease"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("noctalia-shell ipc call volume muteOutput"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("noctalia-shell ipc call brightness increase"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("noctalia-shell ipc call brightness decrease"), { locked = true, repeating = true })
+
+
 
 -- Requires playerctl
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
@@ -542,7 +562,10 @@ hl.bind("SHIFT + Print", hl.dsp.exec_cmd("screenshot-satty-file area"))
 hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("hypr-lid close"), { locked = true })
 hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd("hypr-lid open"), { locked = true })
 
-hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("hyprlock"))
+-- bind power button to open the session menu
+hl.bind("XF86PowerOff", hl.dsp.exec_cmd("noctalia-shell ipc call sessionMenu toggle"), { locked = true })
+
+hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("noctalia-shell ipc call lockScreen lock"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
 
 -- bind = $mainMod, S, togglegroup
@@ -579,6 +602,8 @@ hl.bind(mainMod .. " + SHIFT + down",
     })
 )
 
+
+hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("noctalia-shell ipc call launcher windows"))
 
 hl.bind(mainMod .. " + CTRL + G", hl.dsp.group.lock_active())
 
