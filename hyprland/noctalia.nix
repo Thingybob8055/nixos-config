@@ -431,11 +431,11 @@
               enabled = true;
               keybind = "5";
             }
-            {
-              action = "rebootToUefi";
-              enabled = true;
-              keybind = "6";
-            }
+            # {
+            #   action = "rebootToUefi";
+            #   enabled = true;
+            #   keybind = "6";
+            # }
           ];
         };
         notifications = {
