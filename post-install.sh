@@ -14,5 +14,6 @@ yabridgectl sync
 yabridgectl status
 yabridgectl --version
 
+# https://github.com/whereareiam/noctalia-plugins
 
 WINEPREFIX=~/.wine winetricks dxvk
