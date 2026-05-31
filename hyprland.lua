@@ -266,6 +266,15 @@ hl.layer_rule({
     blur_popups = true
 })
 
+hl.layer_rule({
+    name         = "noctalia-blur-tabber",
+    match        = { namespace = "tabber-.*$" },
+    blur         = true,
+    -- animation = "slide right",
+    ignore_alpha = 0.5,
+    blur_popups = true
+})
+
 
 -- layerrule = animation slide right, match:namespace swaync-control-center
 
