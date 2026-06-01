@@ -618,7 +618,9 @@ hl.bind(mainMod .. " + SHIFT + down",
 )
 
 
-hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("noctalia-shell ipc call launcher windows"))
+hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("noctalia-shell ipc call launcher windows"))
+
+hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("noctalia-shell ipc call launcher clipboard"))
 
 hl.bind(mainMod .. " + CTRL + G", hl.dsp.group.lock_active())
 

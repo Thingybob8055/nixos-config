@@ -98,11 +98,11 @@
           animationSpeed = 1;
           animationDisabled = false;
           compactLockScreen = false;
-          lockScreenAnimations = false;
+          lockScreenAnimations = true;
           lockOnSuspend = true;
           showSessionButtonsOnLockScreen = true;
           showHibernateOnLockScreen = false;
-          enableLockScreenMediaControls = false;
+          enableLockScreenMediaControls = true;
           enableShadows = true;
           enableBlurBehind = true;
           shadowDirection = "bottom_right";
@@ -243,7 +243,7 @@
           favorites = [ ];
         };
         appLauncher = {
-          enableClipboardHistory = false;
+          enableClipboardHistory = true;
           autoPasteClipboard = false;
           enableClipPreview = true;
           clipboardWrapText = true;
