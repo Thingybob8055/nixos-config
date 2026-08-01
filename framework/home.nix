@@ -89,6 +89,8 @@
     nerd-fonts.iosevka
     satty
     grimblast
+    opencode
+    opencode-desktop
 
     #wofi
     #hyprlauncher
