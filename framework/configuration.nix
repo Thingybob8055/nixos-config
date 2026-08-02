@@ -182,6 +182,7 @@
     SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="374b", MODE="0666", GROUP="dialout"
     KERNEL=="rtc0", GROUP="audio"
     KERNEL=="hpet", GROUP="audio"
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="3000", MODE="0666"
   '';
 
    security.pam.loginLimits = [

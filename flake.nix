@@ -21,8 +21,8 @@
    # minegrub-theme.url = "github:Lxtharia/minegrub-theme";
 
     noctalia = {
-        url = "github:noctalia-dev/noctalia-shell";
-        inputs.nixpkgs.follows = "nixpkgs";
+        url = "github:noctalia-dev/noctalia/legacy-v4";
+	inputs.nixpkgs.follows = "nixpkgs";
       };
 
      home-manager = {
