@@ -32,7 +32,7 @@
     megasync
     fastfetch
     dconf-editor
-    flameshot
+    #flameshot
     xeyes
     wl-clipboard
     appimage-run
@@ -44,10 +44,86 @@
     equibop
     davinci-resolve
     ffmpeg
-    (pkgs.bottles.override {
+    (pkgs-stable.bottles.override {
     removeWarningPopup = true;
     })
+    # pkgs-stable.bottles
     
+    wdisplays
+    brightnessctl
+    pamixer
+    pavucontrol
+    wireplumber
+    playerctl
+    adwaita-icon-theme
+    nerd-fonts.jetbrains-mono
+    lexend
+    nwg-look
+    
+    grim
+    slurp
+    swappy
+    wl-clipboard
+    cliphist
+    libnotify
+    # wofi
+    libsForQt5.qt5ct
+    qt6Packages.qt6ct
+    kdePackages.qtstyleplugin-kvantum
+    kdePackages.breeze-icons
+    copyq
+    # hyprlock
+    # hypridle
+    # sherlock-launcher
+
+    adw-gtk3
+    adwaita-qt
+    adwaita-qt6
+    intel-gpu-tools
+    adwaita-icon-theme
+    hicolor-icon-theme
+    # awww
+    kitty-themes
+    google-fonts
+    icomoon-feather
+    nerd-fonts.iosevka
+    satty
+    grimblast
+    opencode
+    opencode-desktop
+
+    #wofi
+    #hyprlauncher
+    # swayosd
+    jq
+    # sound-theme-freedesktop
+
+    zerotierone
+    vital
+
+    dejavu_fonts
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+    pkgs.inter
+
+    thunar
+    thunar-archive-plugin
+    thunar-media-tags-plugin
+    thunar-vcs-plugin
+    thunar-volman
+    tumbler
+    ffmpegthumbnailer
+    file-roller
+
+    hydra-check
+
+    # (pkgs.catppuccin-gtk.override {
+    #   accents = [ "blue" ]; # Choose your accent
+    #   size = "standard";
+    #   variant = "mocha";    # Change from "frappe" to "mocha", "macchiato", or "latte"
+    # })
+
     (writeShellScriptBin "vesktop-themed" ''
       THEME=$(gsettings get org.gnome.desktop.interface color-scheme)
 
@@ -148,7 +224,74 @@
   exit 1
   fi
   '')
+
+  (writeShellScriptBin "screenshot" ''
+      set -e
+
+      dir="$HOME/Pictures/Screenshots"
+      mkdir -p "$dir"
+
+      file="$dir/screen-$(date +%Y-%m-%d-%H-%M-%S).png"
+
+      mode="$1"
+
+      if [ "$mode" = "area" ]; then
+        grim -g "$(slurp)" - | tee "$file" | wl-copy
+      else
+        grim "$file"
+        cat "$file" | wl-copy
+      fi
+
+      swappy -f "$file"
+    '')
+
+    (writeShellScriptBin "screenshot-satty-file" ''
+      set -e
+
+      dir="$HOME/Pictures/Screenshots"
+      mkdir -p "$dir"
+
+      file="$dir/screen-$(date +%Y-%m-%d-%H-%M-%S).png"
+      mode="$1"
+
+      if [ "$mode" = "area" ]; then
+        grim -g "$(slurp)" "$file"
+      else
+        grim "$file"
+      fi
+
+      satty --filename "$file" --copy-command wl-copy
+    '')
     
+    (pkgs.writeShellScriptBin "hypr-lid" ''
+       #!/usr/bin/env bash
+
+      EXTERNAL=$(hyprctl monitors -j | jq '[.[] | select(.name != "eDP-1")] | length')
+
+      EVENT="$1"
+
+      echo "External monitors: $EXTERNAL"
+
+      if [[ "$EVENT" == "close" ]]; then
+        if [[ "$EXTERNAL" -gt 0 ]]; then
+          hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = true })'
+        else
+          #loginctl lock-session
+          #sleep 0.5
+          #systemctl suspend -i
+          qs ipc --pid "$(qs list --all | awk '/Process ID:/{pid=$3} /noctalia-shell/{print pid; exit}')" call sessionMenu lockAndSuspend
+        fi
+      fi
+
+      if [[ "$EVENT" == "open" ]]; then
+        if [[ "$EXTERNAL" -gt 0 ]]; then
+          hyprctl reload
+        fi
+      fi
+      '')
+
+
+
     gnomeExtensions.blur-my-shell
     gnomeExtensions.appindicator
     gnomeExtensions.rounded-window-corners-reborn
@@ -162,22 +305,24 @@
     gnomeExtensions.mosaic
     gnomeExtensions.launch-new-instance
     gnomeExtensions.pop-shell
-    #gnomeExtensions.dash-to-dock
+    gnomeExtensions.dash-to-dock
     
-    (pkgs.gnomeExtensions.dash-to-dock.overrideAttrs (old: {
-       version = "102";
-       src = pkgs.fetchzip {
-       url = "https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v102.shell-extension.zip";
-    sha256 = "sha256-nks4PIEVmX6THDRAb8PU7t5FuX4w781B8TzcpQRl2yw=";
-    stripRoot = false;
-     };
-    }))
+    # (pkgs.gnomeExtensions.dash-to-dock.overrideAttrs (old: {
+    #    version = "102";
+    #    src = pkgs.fetchzip {
+    #    url = "https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v102.shell-extension.zip";
+    # sha256 = "sha256-nks4PIEVmX6THDRAb8PU7t5FuX4w781B8TzcpQRl2yw=";
+    # stripRoot = false;
+    #  };
+    # }))
     
-    pkgs-stable.nerdfonts
-    pkgs-stable.fira
+    # pkgs-stable.nerdfonts
+    # pkgs-stable.fira
     pkgs-stable.roboto
     pkgs-stable.corefonts
-    pkgs-stable.neofetch
+    pkgs-stable.hyfetch
+
+    ns-usbloader
     
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -192,6 +337,15 @@
     #   echo "Hello, ${config.home.username}!"
     # '')
   ];
+
+  home.file.".vst3/Vital.vst3".source =
+    "${pkgs.vital}/lib/vst3/Vital.vst3";
+
+  home.file.".vst/Vital.so".source =
+    "${pkgs.vital}/lib/vst/Vital.so";
+
+  home.file.".clap/Vital.clap".source =
+    "${pkgs.vital}/lib/clap/Vital.clap";
 
   # Now add the xdg.desktopEntries block outside of home.packages
   xdg.desktopEntries.moises = {
@@ -223,6 +377,69 @@
     categories = [ "Audio" "Music" "Audio" "AudioVideo"];
     startupNotify = true;
  };
+
+  xdg.desktopEntries.cockos-reaper = {
+      name = "REAPER";
+      comment = "REAPER DAW";
+      exec = "bash -lc reaper";
+      icon = "${pkgs.reaper}/share/icons/hicolor/256x256/apps/cockos-reaper.png";
+      terminal = false;
+
+      categories = ["Audio" "Video" "AudioVideo" "AudioVideoEditing" "Music" ];
+
+      startupNotify = true;
+    };
+
+
+  xdg.configFile = {
+  "hypr/hyprsplit" = {
+    source = "${inputs.hyprsplit.packages.${pkgs.stdenv.hostPlatform.system}.hyprsplitlua}/share/hyprsplit";
+    recursive = true;
+    };
+  };
+
+  xdg.configFile."xfce4/helpers.rc".text = ''
+    TerminalEmulator=kitty
+  '';
+
+  xdg.configFile."Thunar/uca.xml".text = ''
+    <?xml version="1.0" encoding="UTF-8"?>
+    <actions>
+
+      <action>
+        <icon>code</icon>
+        <name>Open Folder in VSCode</name>
+        <command>code %f</command>
+        <patterns>*</patterns>
+        <directories/>
+      </action>
+
+      <action>
+        <icon>terminal</icon>
+        <name>Open Terminal Here</name>
+        <command>kitty --directory=%f</command>
+        <patterns>*</patterns>
+        <directories/>
+     </action>
+
+    </actions>
+    '';
+
+   xdg.configFile."mimeapps.list".force = true;
+   xdg.mimeApps = {
+  enable = true;
+
+  defaultApplications = {
+    "application/pdf" = "org.gnome.Papers.desktop";
+    "image/png" = "org.gnome.Loupe.desktop";
+    "image/jpeg" = "org.gnome.Loupe.desktop";
+    "image/jpg" = "org.gnome.Loupe.desktop";
+    "image/webp" = "org.gnome.Loupe.desktop";
+    "image/gif" = "org.gnome.Loupe.desktop";
+    "inode/directory" = "thunar.desktop";
+    "x-directory/normal" = "thunar.desktop";
+  };
+};
 
   home.sessionPath = [ "/home/akshay/.local/share/yabridge" ];
 
@@ -279,6 +496,21 @@
     # EDITOR = "emacs";
   #};
 
+  # gtk.gtk4.theme = config.gtk.theme;
+
+  # gtk = {
+  #   enable = true;
+
+  #   theme = {
+  #     name = "catppuccin-mocha-blue-standard";
+  #     package = pkgs.catppuccin-gtk.override {
+  #       variant = "mocha";
+  #       accents = [ "blue" ];
+  #       size = "standard";
+  #     };
+  #   };
+  # };
+
   home.sessionVariables = {
     # Add environment variables if needed
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
@@ -287,6 +519,9 @@
     QT_QPA_PLATFORM = "wayland;xcb";  # Use Wayland, fallback to XCB
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
+    QT_QPA_PLATFORMTHEME = "qt6ct";
+    FILE_MANAGER = "thunar";
+    # QT_STYLE_OVERRIDE = "Adwaita-Dark";
   };
 
   # Let Home Manager install and manage itself.
@@ -308,8 +543,20 @@
   
   imports = [
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
+    inputs.noctalia.homeModules.default
     #inputs.spicetify-nix.homeManagerModules.default
     ../user/app/flatpak.nix
+    # ../hyprland/hyprland-conf.nix
+    # ../hyprland/waybar.nix
+    # ../hyprland/rofi.nix
+    # ../hyprland/nwg-drawer.nix
+    # ../hyprland/hyprlock.nix
+    # ../hyprland/wleave.nix
+    # ../hyprland/swaync.nix
+    # ../hyprland/battery-notif.nix
+    # ../hyprland/hypridle.nix
+    # ../hyprland/hyprshell.nix
+    ../hyprland/noctalia.nix
   ];
   
   dconf = {
@@ -318,6 +565,7 @@
      "org/gnome/desktop/interface" = {
       icon-theme = "Adwaita";  # Use any installed theme like 'Papirus', 'Breeze', etc.
       cursor-theme = "Adwaita";  # Set the cursor theme declaratively
+      color-scheme = "prefer-dark";
       gtk-theme = "Adwaita-dark";
     };
   
@@ -524,6 +772,16 @@
     };
   };
 
+  programs.kitty = {
+    enable = true;
+    settings = {
+      confirm_os_window_close = 0;
+    };
+    extraConfig = ''
+      include ${pkgs.kitty-themes}/share/kitty-themes/themes/adwaita_dark.conf
+    '';
+  };
+
   #programs.spicetify =
   #let
   #  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
@@ -533,12 +791,24 @@
   #  wayland = false;
   #};
   
+  home.file.".vscode/argv.json".text = ''
+    {
+      // Fixes the "an OS keyring couldn't be identified for
+      // storing the encryption..." error
+      
+      "password-store":"gnome-libsecret"
+    }
+  '';
+
+  services.swayosd.enable = true;
+
   programs.zsh =
   let
   # My shell aliases
   myAliases = {
     dev-rust = "nix develop /etc/nixos\#rust-dev";
     dev-embed = "nix develop /etc/nixos\#embed-dev";
+    nix-rebuild = "sudo nixos-rebuild switch --flake /home/akshay/Documents/nixos-config#default";
     #ls = "eza --icons -l -T -L=1";
     #cat = "bat";
     #htop = "btm";
@@ -596,6 +866,4 @@ in
   #  enableCompletion = true;
   #  shellAliases = myAliases;
   #};
- 
-  
 }
