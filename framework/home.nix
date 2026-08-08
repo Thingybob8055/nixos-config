@@ -535,7 +535,7 @@
   
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode.fhsWithPackages (ps: with ps; [ python311 ]);
+    package = pkgs.vscode.fhsWithPackages (ps: with ps; [ python311 ripgrep ]);
   };
   
   programs.git = {
@@ -840,6 +840,10 @@ in
     ];
     theme = "robbyrussell";
   };
+
+  sessionVariables = {
+      PATH = "/usr/bin:/usr/sbin:$PATH";
+    };
 
    initContent = ''
   nix_shell_info() {
