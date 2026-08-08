@@ -192,6 +192,12 @@
           -c:a "$AUDIO_CODEC" \
           "$OUTFILE"
         ;;
+      dnxhr_sq) 
+        ffmpeg -y -i "$INFILE" \
+          -c:v dnxhd -profile:v dnxhr_sq \
+          -pix_fmt yuv422p \
+          -c:a "$AUDIO_CODEC" \
+          "$OUTFILE" ;;
     prores)
       ffmpeg -y -i "$INFILE" \
         -c:v prores -profile:v 3 \
