@@ -52,6 +52,9 @@
               {
                 id = "Workspace";
               }
+              {
+                id = "plugin:sticky-notes";
+              }
             ];
             right = [
               {

@@ -15,6 +15,7 @@ yabridgectl status
 yabridgectl --version
 
 # https://github.com/whereareiam/noctalia-plugins
+# sticky notes plugin in Noctalia v4
 
 WINEPREFIX=~/.wine winetricks dxvk
 WINEPREFIX=~/.wine winetricks vcrun6sp6
