@@ -28,7 +28,8 @@
   "it.mijorus.gearlever"
   "com.github.flxzt.rnote"
   "org.openscad.OpenSCAD"
-  ];
+  "io.github.tsmetana.mpk3-settings" 
+ ];
   
   # Configuration file for Spotify flags
   #home.file = {
