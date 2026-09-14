@@ -244,6 +244,7 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.tumbler.enable = true;
 
   home-manager.backupFileExtension = "bak";
   security.pam.services.greetd.enableGnomeKeyring = true;

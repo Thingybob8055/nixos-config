@@ -112,7 +112,7 @@
     thunar-media-tags-plugin
     thunar-vcs-plugin
     thunar-volman
-    tumbler
+    # tumbler
     ffmpegthumbnailer
     file-roller
 
@@ -446,6 +446,17 @@
     "x-directory/normal" = "thunar.desktop";
   };
 };
+
+  systemd.user.services.tumblerd = {
+    Unit = {
+      Description = "Tumbler Thumbnailing Service";
+    };
+
+    Service = {
+      ExecStart = "${pkgs.tumbler}/lib/tumbler-1/tumblerd";
+      Restart = "on-failure";
+    };
+  };
 
   home.sessionPath = [ "/home/akshay/.local/share/yabridge" ];
 
