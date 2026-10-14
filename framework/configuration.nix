@@ -83,6 +83,12 @@
   # xdg.portal.enable = true;
   # xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland ];
   # xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+  nixpkgs.overlays = [
+    (final: prev: {
+      xdg-desktop-portal = pkgs-stable.xdg-desktop-portal;
+    })
+  ];
+  
   xdg.portal = {
   enable = true;
 
