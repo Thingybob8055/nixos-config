@@ -823,8 +823,8 @@
   let
   # My shell aliases
   myAliases = {
-    dev-rust = "nix develop /etc/nixos\#rust-dev";
-    dev-embed = "nix develop /etc/nixos\#embed-dev";
+    dev-rust = "nix develop /home/akshay/Documents/nixos-config#rust-dev";
+    dev-embed = "nix develop /home/akshay/Documents/nixos-config#embed-dev";
     nix-rebuild = "sudo nixos-rebuild switch --flake /home/akshay/Documents/nixos-config#default";
     #ls = "eza --icons -l -T -L=1";
     #cat = "bat";
