@@ -285,7 +285,7 @@
           #loginctl lock-session
           #sleep 0.5
           #systemctl suspend -i
-          qs ipc --pid "$(qs list --all | awk '/Process ID:/{pid=$3} /noctalia-shell/{print pid; exit}')" call sessionMenu lockAndSuspend
+          noctalia msg session lock-and-suspend
         fi
       fi
 
@@ -329,7 +329,114 @@
     pkgs-stable.hyfetch
 
     ns-usbloader
-    
+
+    # fix-desktop-exec FILE|DIR...  — rewrite Exec= lines so Noctalia's launcher can run them.
+    # Noctalia v5 only treats spaces/backslashes as literal inside double quotes, so
+    # shell-style escapes like Wine's `wine C:\\\\Start\\ Menu\\\\App.lnk` get split into
+    # junk arguments. This re-parses Exec the way GNOME/GLib does and re-emits every
+    # argument in spec-compliant double-quoted form (same command, new quoting).
+    # Directories are searched recursively for *.desktop. Keeps FILE.bak unless --no-backup.
+    (pkgs.writers.writePython3Bin "fix-desktop-exec" { flakeIgnore = [ "E501" ]; } ''
+      import argparse
+      import os
+      import shlex
+      import shutil
+      import sys
+
+      # Characters that the desktop-entry spec says must be quoted inside Exec.
+      RESERVED = set(" \t\n\"'\\><~|&;$*?#()`")
+
+
+      def unescape_value(value):
+          """Key-file string unescape (\\s \\n \\t \\r \\\\), as GLib does before parsing Exec."""
+          out = []
+          i = 0
+          while i < len(value):
+              c = value[i]
+              if c == "\\" and i + 1 < len(value):
+                  nxt = value[i + 1]
+                  mapping = {"s": " ", "n": "\n", "t": "\t", "r": "\r", "\\": "\\"}
+                  out.append(mapping.get(nxt, "\\" + nxt))
+                  i += 2
+                  continue
+              out.append(c)
+              i += 1
+          return "".join(out)
+
+
+      def quote_arg(arg):
+          if arg and not any(c in RESERVED for c in arg):
+              return arg
+          for ch in ("\\", "\"", "`", "$"):
+              arg = arg.replace(ch, "\\" + ch)
+          return "\"" + arg + "\""
+
+
+      def fix_exec(raw):
+          argv = shlex.split(unescape_value(raw), posix=True)
+          cmdline = " ".join(quote_arg(a) for a in argv)
+          # Re-apply key-file escaping: every backslash is written doubled.
+          return cmdline.replace("\\", "\\\\")
+
+
+      def desktop_files(paths):
+          for p in paths:
+              if os.path.isdir(p):
+                  for root, _dirs, files in os.walk(p):
+                      for name in sorted(files):
+                          if name.endswith(".desktop"):
+                              yield os.path.join(root, name)
+              else:
+                  yield p
+
+
+      def process(path, dry_run, backup):
+          try:
+              with open(path, encoding="utf-8") as f:
+                  lines = f.read().splitlines(keepends=True)
+          except OSError as e:
+              print(f"skip {path}: {e}", file=sys.stderr)
+              return False
+          changed = False
+          for i, line in enumerate(lines):
+              if not line.startswith("Exec="):
+                  continue
+              body = line[len("Exec="):]
+              eol = body[len(body.rstrip("\r\n")):]
+              old = body.rstrip("\r\n")
+              try:
+                  new = fix_exec(old)
+              except ValueError as e:
+                  print(f"skip {path}: cannot parse Exec ({e}): {old}", file=sys.stderr)
+                  continue
+              if new != old:
+                  print(f"{path}\n  - Exec={old}\n  + Exec={new}")
+                  lines[i] = "Exec=" + new + eol
+                  changed = True
+          if changed and not dry_run:
+              if backup:
+                  shutil.copy2(path, path + ".bak")
+              with open(path, "w", encoding="utf-8") as f:
+                  f.write("".join(lines))
+          return changed
+
+
+      def main():
+          ap = argparse.ArgumentParser(
+              description="Rewrite .desktop Exec= lines into the quoted form Noctalia's launcher understands.")
+          ap.add_argument("paths", nargs="+", help=".desktop files or directories (searched recursively)")
+          ap.add_argument("-n", "--dry-run", action="store_true", help="show changes without writing")
+          ap.add_argument("--no-backup", action="store_true", help="do not keep FILE.bak")
+          args = ap.parse_args()
+          count = sum(process(p, args.dry_run, not args.no_backup) for p in desktop_files(args.paths))
+          verb = "would fix" if args.dry_run else "fixed"
+          print(f"{verb} {count} file(s)")
+
+
+      if __name__ == "__main__":
+          main()
+    '')
+
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -402,6 +509,11 @@
     source = "${inputs.hyprsplit.packages.${pkgs.stdenv.hostPlatform.system}.hyprsplitlua}/share/hyprsplit";
     recursive = true;
     };
+  # hyprtasking: workspace overview plugin (hyprexpo was dropped upstream in May 2026).
+  # Built by nixpkgs against the same pkgs.hyprland the system runs; loaded from
+  # hyprland.lua via hl.plugin.load(). A Hyprland update needs a rebuild + re-login.
+  "hypr/plugins/libhyprtasking.so".source =
+    "${pkgs.hyprlandPlugins.hyprtasking}/lib/libhyprtasking.so";
   };
 
   xdg.configFile."xfce4/helpers.rc".text = ''

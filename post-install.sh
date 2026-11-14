@@ -14,8 +14,8 @@ yabridgectl sync
 yabridgectl status
 yabridgectl --version
 
-# https://github.com/whereareiam/noctalia-plugins
-# sticky notes plugin in Noctalia v4
+# https://github.com/whereareiam/noctalia-plugins (tabber, v5)
+# Noctalia v5: sticky-notes + tabber plugins are declared in hyprland/noctalia.nix (fetched on startup)
 
 WINEPREFIX=~/.wine winetricks dxvk
 WINEPREFIX=~/.wine winetricks vcrun6sp6

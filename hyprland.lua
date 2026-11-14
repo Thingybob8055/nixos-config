@@ -54,7 +54,7 @@ local menu        =
 -- Or execute your favorite apps at launch like this:
 --
 hl.on("hyprland.start", function()
-    hl.exec_cmd("noctalia-shell")
+    hl.exec_cmd("noctalia")
     --   hl.exec_cmd(terminal)
     --hl.exec_cmd("nm-applet --indicator")
     --hl.exec_cmd("swaync")
@@ -257,22 +257,45 @@ hl.window_rule({
 --     ignore_alpha = 0,
 -- })
 
+-- Noctalia v5 surfaces
 hl.layer_rule({
     name         = "noctalia-blur",
-    match        = { namespace = "noctalia-background-.*$" },
+    match        = { namespace = "^noctalia-(bar-.+|notification|dock|attached-panel|osd)$" },
     blur         = true,
-    -- animation = "slide right",
     ignore_alpha = 0.5,
-    blur_popups = true
+    blur_popups  = true
 })
 
 hl.layer_rule({
-    name         = "noctalia-blur-tabber",
-    match        = { namespace = "tabber-.*$" },
+    name         = "noctalia-panel-blur",
+    match        = { namespace = "^noctalia-panel$" },
     blur         = true,
-    -- animation = "slide right",
     ignore_alpha = 0.5,
-    blur_popups = true
+    blur_popups  = true
+})
+
+-- Alt+Tab switcher: full-screen backdrop is a 30% black dim, so ignore_alpha must be
+-- below 0.3 or Hyprland won't blur behind it.
+hl.layer_rule({
+    name         = "noctalia-switcher-blur",
+    match        = { namespace = "^noctalia-window-switcher$" },
+    blur         = true,
+    ignore_alpha = 0.1,
+    blur_popups  = true
+})
+
+-- Noctalia animates its own surfaces; Hyprland layer animations on top cause glitches
+hl.layer_rule({
+    name     = "noctalia-no-anim",
+    match    = { namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$" },
+    no_anim  = true
+})
+
+-- Noctalia settings window
+hl.window_rule({
+    match = { class = "dev.noctalia.Noctalia" },
+    float = true,
+    size  = { 1080, 920 },
 })
 
 
@@ -388,6 +411,55 @@ hl.gesture({
     action = "workspace"
 })
 
+-- Workspace overview (hyprtasking plugin; linked into ~/.config/hypr/plugins by home.nix).
+-- 3-finger swipe up opens it, swipe down closes it. The overview tracks your fingers
+-- while swiping (GNOME-style) and snaps open/closed when you let go.
+-- In the overview: right-click a workspace to go to it, left-drag windows between them.
+hl.plugin.load(os.getenv("HOME") .. "/.config/hypr/plugins/libhyprtasking.so")
+
+hl.config({
+    plugin = {
+        hyprtasking = {
+            layout = "grid",
+            gap_size = 10,
+            bg_color = 0xff1e1e1e,
+            border_size = 2,
+            exit_on_hovered = false,
+            close_overview_on_reload = true,
+            gestures = {
+                enabled = true,
+                open_fingers = 3,     -- 3-finger vertical swipe opens/closes
+                open_distance = 300,  -- swipe length for fully open; lower = more sensitive
+                open_positive = true, -- swipe up opens, down closes
+                -- hyprtasking's own workspace-move swipe. Parked on 5 fingers (effectively off):
+                -- 3 fingers is the open gesture + Hyprland's horizontal workspace swipe, and
+                -- 4 fingers is the notification-dismiss swipe below, which it would hijack.
+                move_fingers = 5,
+                move_distance = 300,
+            },
+            grid = {
+                rows = 3,
+                cols = 3,
+                loop = false,
+            },
+        },
+    },
+})
+
+-- Keyboard toggle for the overview (Escape isn't bound: a global Escape bind
+-- would eat the key in every app)
+hl.bind("SUPER + Tab", function() hl.plugin.hyprtasking.toggle("cursor") end)
+
+-- 4-finger swipe right: dismiss the notification popups on screen
+-- (they stay in Control Center history). Noctalia toasts have no swipe-to-dismiss of their own.
+hl.gesture({
+    fingers = 4,
+    direction = "right",
+    action = function()
+        hl.exec_cmd("noctalia msg notification-clear-active")
+    end
+})
+
 -- Example per-device config
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Devices/ for more
 hl.device({
@@ -409,8 +481,8 @@ local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + G", hl.dsp.window.float({ action = "toggle" }))
 -- hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
-hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("noctalia-shell ipc call launcher toggle"))
-hl.bind(mainMod .. " + comma", hl.dsp.exec_cmd("noctalia-shell ipc call settings toggle"))
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("noctalia msg panel-toggle launcher"))
+hl.bind(mainMod .. " + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + O", hl.dsp.layout("togglesplit")) -- dwindle only
 hl.bind(mainMod .. " + M",
@@ -549,11 +621,11 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 -- hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness +5"), { locked = true, repeating = true })
 -- hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness -5"), { locked = true, repeating = true })
 
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia-shell ipc call volume increase"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("noctalia-shell ipc call volume decrease"), { locked = true, repeating = true })
-hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("noctalia-shell ipc call volume muteOutput"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("noctalia-shell ipc call brightness increase"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("noctalia-shell ipc call brightness decrease"), { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("noctalia msg volume-down"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("noctalia msg volume-mute"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("noctalia msg brightness-up"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("noctalia msg brightness-down"), { locked = true, repeating = true })
 
 
 
@@ -572,9 +644,9 @@ hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("hypr-lid close"), { locked = tr
 hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd("hypr-lid open"), { locked = true })
 
 -- bind power button to open the session menu
-hl.bind("XF86PowerOff", hl.dsp.exec_cmd("noctalia-shell ipc call sessionMenu toggle"), { locked = true })
+hl.bind("XF86PowerOff", hl.dsp.exec_cmd("noctalia msg panel-toggle session"), { locked = true })
 
-hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("noctalia-shell ipc call lockScreen lock"))
+hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("noctalia msg session lock"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
 
 -- bind = $mainMod, S, togglegroup
@@ -583,10 +655,10 @@ hl.bind(mainMod .. " + S", hl.dsp.group.toggle())
 hl.bind("SUPER + ALT + RIGHT", hl.dsp.group.next())
 hl.bind("SUPER + ALT + LEFT", hl.dsp.group.prev())
 
--- bind = ALT, Tab, global, tabber:select-next
-hl.bind("ALT + Tab", hl.dsp.global("tabber:select-next"))
-hl.bind("ALT + SHIFT + Tab", hl.dsp.global("tabber:select-previous"))
-hl.bind("ALT + Grave", hl.dsp.global("tabber:enter-group"))
+-- Alt+Tab: Noctalia's built-in window switcher. "hold" accepts on Alt release
+-- (a quick tap flips to the previous window); "reverse" steps backwards.
+hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher hold"))
+hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher hold reverse"))
 
 
 hl.bind(mainMod .. " + SHIFT + left",
@@ -618,9 +690,9 @@ hl.bind(mainMod .. " + SHIFT + down",
 )
 
 
-hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("noctalia-shell ipc call launcher windows"))
+hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("noctalia msg panel-toggle launcher '/win '"))
 
-hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("noctalia-shell ipc call launcher clipboard"))
+hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"))
 
 hl.bind(mainMod .. " + CTRL + G", hl.dsp.group.lock_active())
 
