@@ -277,7 +277,9 @@ in
       };
 
       dock.enabled = false;
-      desktop_widgets.enabled = false;
+      # Needed for Noctes sticky notes (and any other desktop widget).
+      # Widget placement is runtime state Noctalia keeps in ~/.local/state/noctalia/settings.toml.
+      desktop_widgets.enabled = true;
 
       # ── Plugins ───────────────────────────────────────────────────────────
       # v4 QML plugins don't run on v5; these are the native Luau ports:
@@ -290,6 +292,10 @@ in
       plugins = {
         enabled = [
           "ahmedhossamdev/sticky-notes"
+          # Sticky notes on the desktop: one desktop widget per note, edited in a panel.
+          # First note: `noctalia msg plugin remo/noctes:service all desk`
+          # Needs python3 on PATH (added in home.nix) for its tools/noctes-widget helper.
+          "remo/noctes"
         ];
         auto_update = "none"; # v4 autoUpdate = false
         source = [

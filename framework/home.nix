@@ -330,6 +330,9 @@
 
     ns-usbloader
 
+    # Noctalia's Noctes plugin runs a python3 helper; NixOS has no python3 on PATH by default.
+    python3
+
     # fix-desktop-exec FILE|DIR...  — rewrite Exec= lines so Noctalia's launcher can run them.
     # Noctalia v5 only treats spaces/backslashes as literal inside double quotes, so
     # shell-style escapes like Wine's `wine C:\\\\Start\\ Menu\\\\App.lnk` get split into
