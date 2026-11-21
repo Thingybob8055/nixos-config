@@ -86,6 +86,10 @@
   nixpkgs.overlays = [
     (final: prev: {
       xdg-desktop-portal = pkgs-stable.xdg-desktop-portal;
+      # Must match the pinned portal: unstable's portal-gnome 51 needs
+      # xdg-desktop-portal >= 1.21.1 (also pulled in by the GNOME module).
+      # Remove both lines together once the dark-mode issue is fixed upstream.
+      xdg-desktop-portal-gnome = pkgs-stable.xdg-desktop-portal-gnome;
     })
   ];
   

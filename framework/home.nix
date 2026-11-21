@@ -543,8 +543,23 @@
   # hyprtasking: workspace overview plugin (hyprexpo was dropped upstream in May 2026).
   # Built by nixpkgs against the same pkgs.hyprland the system runs; loaded from
   # hyprland.lua via hl.plugin.load(). A Hyprland update needs a rebuild + re-login.
+  #
+  # nixpkgs' hyprtasking (2026-09-20) doesn't compile against Hyprland 0.57, so it's
+  # pinned to upstream's commit that merged 0.57 support (PR #140, 2026-11-10).
+  # Drop this override once nixpkgs' version is newer than that.
   "hypr/plugins/libhyprtasking.so".source =
-    "${pkgs.hyprlandPlugins.hyprtasking}/lib/libhyprtasking.so";
+    let
+      hyprtasking = pkgs.hyprlandPlugins.hyprtasking.overrideAttrs (_: {
+        version = "0-unstable-2026-11-10";
+        src = pkgs.fetchFromGitHub {
+          owner = "raybbian";
+          repo = "hyprtasking";
+          rev = "04d2365d37f032af537b8d5c55efbfe15f01adc7";
+          hash = "sha256-KzxmA0lqTvZKq/AHdSu2juugkfXwLC6ywR4BeAfiIIg=";
+        };
+      });
+    in
+    "${hyprtasking}/lib/libhyprtasking.so";
   };
 
   xdg.configFile."xfce4/helpers.rc".text = ''

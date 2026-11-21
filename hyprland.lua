@@ -698,7 +698,7 @@ hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("noctalia msg panel-toggle remo/noctes:panel"))
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("noctalia msg plugin remo/noctes:service all desk"))
 
-hl.bind(mainMod .. " + CTRL + G", hl.dsp.group.lock_active())
+hl.bind(mainMod .. " + CTRL + G", hl.dsp.group.lock())
 
 hl.bind(mainMod .. " + SHIFT + CTRL + left",
     hl.dsp.window.move({ monitor = "l" })
