@@ -45,6 +45,13 @@
     })
     # MitCad 3D CAD: self-updating launcher for the official AppImage (see the file).
     (pkgs.callPackage ../user/pkgs/mitcad.nix { })
+    # Zen browser, native build (flake input `zen-browser`), replacing the Flatpak.
+    # Uses system Mesa: the Flatpak's Mesa hung the Intel GPU on WebGL (Ultimate Guitar)
+    # and took Hyprland down; native Firefox with system Mesa doesn't.
+    # Profile: ~/.config/zen, migrated from ~/.var/app/app.zen_browser.zen/.zen.
+    # Package only, not the flake's home-manager module, so profiles.ini and
+    # zen-sessions (spaces/pins) are never rewritten by Nix.
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.beta
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -602,6 +609,13 @@
     "image/gif" = "org.gnome.Loupe.desktop";
     "inode/directory" = "thunar.desktop";
     "x-directory/normal" = "thunar.desktop";
+    # Native Zen (zen-browser flake) as the default browser.
+    "text/html" = "zen-beta.desktop";
+    "application/xhtml+xml" = "zen-beta.desktop";
+    "x-scheme-handler/http" = "zen-beta.desktop";
+    "x-scheme-handler/https" = "zen-beta.desktop";
+    "x-scheme-handler/about" = "zen-beta.desktop";
+    "x-scheme-handler/unknown" = "zen-beta.desktop";
   };
 };
 

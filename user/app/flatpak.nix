@@ -12,7 +12,6 @@
   services.flatpak.packages = [ { appId = "org.videolan.VLC"; origin = "flathub";  } 
   "com.rtosta.zapzap"
   #"com.spotify.Client"
-  "app.zen_browser.zen"
   "org.gtk.Gtk3theme.Adwaita-dark"
   "com.mattjakeman.ExtensionManager"
   #"com.usebottles.bottles"
