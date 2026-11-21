@@ -238,6 +238,14 @@
   users.defaultUserShell = pkgs.zsh;
   programs.zsh.enable = true;
 
+  # Run .AppImage files directly (binfmt hands them to appimage-run's FHS env).
+  # Needed for apps installed by ArtCraft Launcher, whose .desktop entries Exec the
+  # AppImage itself (e.g. ~/Applications/solidcraft-*.AppImage).
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

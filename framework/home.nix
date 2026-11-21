@@ -18,6 +18,33 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    # ArtCraft Launcher (official flake, see flake.nix). The upstream package ships only
+    # the binary, so add its own .desktop entry and icon from the same source.
+    (let
+      src = inputs.craft-launcher;
+      # Upstream's flake (marked experimental) fails to build as of 0.19.2: Cargo.toml
+      # [patch.crates-io] lists crates (egui_demo_lib, ...) that Cargo.lock marks [[patch.unused]], so
+      # Nix's offline vendor dir lacks them and cargo aborts. Drop those unused patch lines.
+      bin = inputs.craft-launcher.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+        postPatch = (old.postPatch or "") + ''
+          for crate in $(sed -n '/^\[\[patch\.unused\]\]/{n;s/^name = "\(.*\)"/\1/p}' Cargo.lock); do
+            echo "artcraft: dropping unused cargo patch $crate"
+            sed -i "/^$crate *= *{.*git/d" Cargo.toml
+          done
+        '';
+      });
+    in pkgs.symlinkJoin {
+      name = "artcraft-launcher-${bin.version}";
+      paths = [ bin ];
+      postBuild = ''
+        install -Dm644 ${src}/packaging/linux/ai.storyteller.artcraft-launcher.desktop \
+          $out/share/applications/ai.storyteller.artcraft-launcher.desktop
+        install -Dm644 ${src}/assets/app-icon/artcraft-launcher.svg \
+          $out/share/icons/hicolor/scalable/apps/ai.storyteller.artcraft-launcher.svg
+      '';
+    })
+    # MitCad 3D CAD: self-updating launcher for the official AppImage (see the file).
+    (pkgs.callPackage ../user/pkgs/mitcad.nix { })
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -91,6 +118,7 @@
     grimblast
     opencode
     opencode-desktop
+    claude-code
 
     #wofi
     #hyprlauncher
@@ -561,6 +589,31 @@
     "x-directory/normal" = "thunar.desktop";
   };
 };
+
+  # Keep MitCad current even if it isn't launched (downloads only when a new release
+  # exists; verified against the official manifest's sha256). See user/pkgs/mitcad.nix.
+  systemd.user.services.mitcad-update = {
+    Unit = {
+      Description = "Update MitCad AppImage from official GitHub releases";
+      After = [ "network-online.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${(pkgs.callPackage ../user/pkgs/mitcad.nix { }).update}/bin/mitcad-update";
+      Nice = 10;
+      IOSchedulingClass = "idle";
+    };
+  };
+  systemd.user.timers.mitcad-update = {
+    Unit.Description = "Daily MitCad update check";
+    Timer = {
+      OnCalendar = "daily";
+      OnStartupSec = "10min";
+      Persistent = true;
+      RandomizedDelaySec = "30min";
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
 
   systemd.user.services.tumblerd = {
     Unit = {

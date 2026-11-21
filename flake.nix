@@ -25,6 +25,12 @@
 	inputs.nixpkgs.follows = "nixpkgs";
       };
 
+    # ArtCraft Launcher: official flake from the developers (Storyteller.ai), built from source.
+    craft-launcher = {
+      url = "github:storytold/craft-launcher";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
      home-manager = {
        url = "github:nix-community/home-manager";
        inputs.nixpkgs.follows = "nixpkgs";
