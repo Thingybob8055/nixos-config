@@ -126,6 +126,9 @@
     opencode
     opencode-desktop
     claude-code
+    # ACP adapter for Claude Code: lets ACP clients (SolidCraft's agent chat, Zed, ...)
+    # drive Claude Code. OpenCode speaks ACP itself; Claude Code needs this.
+    claude-agent-acp
 
     #wofi
     #hyprlauncher
