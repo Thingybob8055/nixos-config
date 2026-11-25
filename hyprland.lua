@@ -60,7 +60,7 @@ hl.on("hyprland.start", function()
     --hl.exec_cmd("swaync")
     --hl.exec_cmd("blueman-applet")
     hl.exec_cmd("wl-paste --watch cliphist store")
-    hl.exec_cmd("copyq --start-server")
+    -- hl.exec_cmd("copyq --start-server")
     --hl.exec_cmd("hypridle")
     --hl.exec_cmd("awww-daemon")
     --hl.exec_cmd("awww img ~/.wallpapers/2026-04-13-01-30-57-2mn8bo9krcx71.png")
@@ -69,11 +69,9 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("gnome-keyring-daemon --start --components=pkcs11,secrets,ssh")
 
-    --for libadwaita gtk4 apps you can use this command:
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme \"prefer-dark\" ")
-
-    --for gtk3 apps you need to install adw-gtk3 theme
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme \"adw-gtk3-dark\" ")
+    -- Light/dark mode: owned by Noctalia's theme mode (bar button on the far right).
+    -- Its hooks run `theme-sync` at startup and on every switch (hyprland/theme-switch.nix
+    -- in the nixos-config). Don't force color-scheme/gtk-theme here.
 
     --hl.exec_cmd("systemctl --user start battery-alert")
 
@@ -97,8 +95,9 @@ end)
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("XCURSOR_THEME", "Adwaita")
-hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
-hl.env("QT_STYLE_OVERRIDE", "Adwaita-Dark")
+-- Qt follows the portal's light/dark color-scheme live. No QT_STYLE_OVERRIDE: a fixed
+-- Adwaita-Dark style pinned every Qt app (Flatpaks too) to dark.
+hl.env("QT_QPA_PLATFORMTHEME", "xdgdesktopportal")
 
 -----------------------
 ----- PERMISSIONS -----

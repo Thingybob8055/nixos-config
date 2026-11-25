@@ -63,7 +63,18 @@
     unityhub
     steam
     stm32cubemx
-    megasync
+    # MEGAsync is Qt 5 (no light/dark support): pick the adwaita-qt style at launch.
+    # theme-sync restarts it when the mode changes (see hyprland/theme-switch.nix).
+    (pkgs.symlinkJoin {
+      name = "megasync-themed-${pkgs.megasync.version}";
+      paths = [ pkgs.megasync ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        rm $out/bin/megasync
+        makeWrapper ${pkgs.megasync}/bin/megasync $out/bin/megasync \
+          --run 'case "$(${pkgs.glib}/bin/gsettings get org.gnome.desktop.interface color-scheme)" in *dark*) export QT_STYLE_OVERRIDE=Adwaita-Dark ;; *) export QT_STYLE_OVERRIDE=Adwaita ;; esac'
+      '';
+    })
     fastfetch
     dconf-editor
     #flameshot
@@ -183,14 +194,10 @@
      spotify --ozone-platform=x11
    '')
     
+    # Electron 43 follows the system light/dark preference live through the portal,
+    # so no GTK_THEME (that fixed the look for the whole run).
     (writeShellScriptBin "moises" ''
-    THEME=$(gsettings get org.gnome.desktop.interface color-scheme)
-
-    if [[ "$THEME" == *"prefer-dark"* ]]; then
-      GTK_THEME=Adwaita:dark appimage-run /home/akshay/AppImages/moises.appimage
-    else
-      GTK_THEME=Adwaita appimage-run /home/akshay/AppImages/moises.appimage
-    fi
+    exec appimage-run /home/akshay/AppImages/moises.appimage "$@"
   '')
     
     (writeShellScriptBin "resolve-transcode" ''
@@ -736,9 +743,10 @@
     QT_QPA_PLATFORM = "wayland;xcb";  # Use Wayland, fallback to XCB
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
-    QT_QPA_PLATFORMTHEME = "qt6ct";
+    # Qt follows the portal's light/dark color-scheme live (tested: Qt 6 Fusion switches
+    # palette). qt6ct and QT_STYLE_OVERRIDE=Adwaita-Dark pinned dark mode.
+    QT_QPA_PLATFORMTHEME = "xdgdesktopportal";
     FILE_MANAGER = "thunar";
-    # QT_STYLE_OVERRIDE = "Adwaita-Dark";
   };
 
   # Let Home Manager install and manage itself.
@@ -774,6 +782,7 @@
     # ../hyprland/hypridle.nix
     # ../hyprland/hyprshell.nix
     ../hyprland/noctalia.nix
+    ../hyprland/theme-switch.nix
   ];
   
   dconf = {
@@ -782,12 +791,8 @@
      "org/gnome/desktop/interface" = {
       icon-theme = "Adwaita";  # Use any installed theme like 'Papirus', 'Breeze', etc.
       cursor-theme = "Adwaita";  # Set the cursor theme declaratively
-      color-scheme = "prefer-dark";
-      gtk-theme = "Adwaita-dark";
-    };
-  
-   "org/gnome/desktop/wm/preferences" = {
-      theme = "Adwaita-dark";
+      # color-scheme and gtk-theme are NOT set here: Noctalia's light/dark switch owns
+      # them (hyprland/theme-switch.nix). Setting them here reset dark on every rebuild.
     };
 
    "org/gnome/mutter" = {
@@ -994,9 +999,8 @@
     settings = {
       confirm_os_window_close = 0;
     };
-    extraConfig = ''
-      include ${pkgs.kitty-themes}/share/kitty-themes/themes/adwaita_dark.conf
-    '';
+    # Colors: dark-/light-theme.auto.conf (hyprland/theme-switch.nix) follow the
+    # system light/dark mode live; a fixed include here would pin one.
   };
 
   #programs.spicetify =

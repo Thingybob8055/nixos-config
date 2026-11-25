@@ -139,7 +139,9 @@ in
 
           start = [ "launcher" "clock" "sysmon-cpu" "sysmon-temp" "sysmon-ram" "active_window" "media" ];
           center = [ "workspaces" "sticky-notes" ];
-          end = [ "tray" "notifications" "battery" "volume" "brightness" "control-center" ];
+          # theme_mode (far right): light/dark switch for the whole system,
+          # see hyprland/theme-switch.nix.
+          end = [ "tray" "notifications" "battery" "volume" "brightness" "control-center" "theme_mode" ];
         };
       };
 

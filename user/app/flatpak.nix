@@ -13,6 +13,9 @@
   "com.rtosta.zapzap"
   #"com.spotify.Client"
   "org.gtk.Gtk3theme.Adwaita-dark"
+  # GTK3 Flatpaks: the light/dark switch sets gtk-theme to adw-gtk3 / adw-gtk3-dark.
+  "org.gtk.Gtk3theme.adw-gtk3"
+  "org.gtk.Gtk3theme.adw-gtk3-dark"
   "com.mattjakeman.ExtensionManager"
   #"com.usebottles.bottles"
   #"org.flameshot.Flameshot"
