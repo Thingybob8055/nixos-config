@@ -15,6 +15,8 @@
 #       Qt 5       MEGAsync is restarted with the matching adwaita-qt style; Qt 5
 #                  Flatpaks (VLC, OpenSCAD) get the matching Adwaita style on next start
 #       CopyQ      restarted (it only reads the palette at startup)
+#       Flatpak    KDE-runtime Qt apps (Qt 5 and 6) get Adwaita / Adwaita-Dark on next start
+#       NS-USBloader  its own THEME preference (JavaFX), applies on next start
 #
 # Not switchable from outside: Proton VPN forces its own dark-only theme (by design).
 #
@@ -70,15 +72,31 @@ let
         if [ -L "$cfg/gtk-4.0/$f" ]; then rm -f "$cfg/gtk-4.0/$f"; fi
       done
 
-      # Qt 5 Flatpaks (KDE 5.15 runtime: VLC, OpenSCAD, ...) have no light/dark support
-      # either: give each one the matching Adwaita style (org.kde.KStyle.Adwaita) via a
-      # per-app override. Takes effect the next time the app starts.
+      # Qt Flatpaks on the KDE runtime (VLC, OpenSCAD on 5.15; LeoCAD, Kdenlive, ... on
+      # 6.x): Qt 5 has no light/dark support, and the runtime's default Breeze style
+      # ignores it outside Plasma. Give each app the matching Adwaita style
+      # (org.kde.KStyle.Adwaita extension) via a per-app override; applies on next start.
       if [ "$mode" = dark ]; then qtstyle=Adwaita-Dark; else qtstyle=Adwaita; fi
       flatpak list --user --app --columns=application,runtime 2>/dev/null \
-        | awk '$2 ~ /^org\.kde\.Platform\/[^\/]+\/5\.15/ {print $1}' \
+        | awk '$2 ~ /^org\.kde\.Platform\// {print $1}' \
         | while read -r app; do
             flatpak override --user --env=QT_STYLE_OVERRIDE="$qtstyle" "$app" || true
           done
+
+      # Qt 6 Flatpaks (LeoCAD, ...): make sure they use the portal-following platform
+      # theme whatever the host env says (a stale qt6ct from the session pinned them).
+      flatpak override --user --env=QT_QPA_PLATFORMTHEME=xdgdesktopportal || true
+
+      # NS-USBloader (JavaFX) has its own theme preference; applies on next start.
+      nsprefs="$HOME/.java/.userPrefs/NS-USBloader/prefs.xml"
+      if [ -f "$nsprefs" ]; then
+        nscss="/res/app_$mode.css"
+        if grep -q '<entry key="THEME"' "$nsprefs"; then
+          sed -i "s|<entry key=\"THEME\" value=\"[^\"]*\"/>|<entry key=\"THEME\" value=\"$nscss\"/>|" "$nsprefs"
+        else
+          sed -i "s|</map>|  <entry key=\"THEME\" value=\"$nscss\"/>\n</map>|" "$nsprefs"
+        fi
+      fi
 
       # Qt 5 has no light/dark support; restart MEGAsync so its wrapper picks the style.
       if pgrep -x megasync >/dev/null; then

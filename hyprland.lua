@@ -72,6 +72,9 @@ hl.on("hyprland.start", function()
     -- Light/dark mode: owned by Noctalia's theme mode (bar button on the far right).
     -- Its hooks run `theme-sync` at startup and on every switch (hyprland/theme-switch.nix
     -- in the nixos-config). Don't force color-scheme/gtk-theme here.
+    -- The systemd user manager outlives logouts and kept a stale QT_QPA_PLATFORMTHEME=qt6ct
+    -- (and QT_STYLE_OVERRIDE) for apps it launches; refresh them from this session.
+    hl.exec_cmd("systemctl --user unset-environment QT_STYLE_OVERRIDE; dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME")
 
     --hl.exec_cmd("systemctl --user start battery-alert")
 
