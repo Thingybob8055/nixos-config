@@ -36,8 +36,8 @@ let
         mode=$(noctalia msg theme-mode-get 2>/dev/null || true)
       fi
       case "$mode" in
-        *dark*)  mode=dark;  scheme=prefer-dark;  gtk=adw-gtk3-dark; dark=1 ;;
-        *light*) mode=light; scheme=prefer-light; gtk=adw-gtk3;      dark=0 ;;
+        *dark*)  mode=dark;  scheme=prefer-dark;  gtk=adw-gtk3-dark ;;
+        *light*) mode=light; scheme=prefer-light; gtk=adw-gtk3 ;;
         *) echo "theme-sync: unknown mode '$mode' (want dark or light)" >&2; exit 2 ;;
       esac
 
@@ -60,7 +60,10 @@ let
       }
       # GTK3 fallback for X11/XWayland apps (no GSettings there).
       setini "$cfg/gtk-3.0/settings.ini" gtk-theme-name "$gtk"
-      setini "$cfg/gtk-3.0/settings.ini" gtk-application-prefer-dark-theme "$dark"
+      # Always 0: adw-gtk3-dark is dark by itself. Running GTK3 apps read this key only
+      # at startup (it isn't a GSettings key), so a 1 kept apps started in dark mode
+      # (e.g. the Thunar daemon) on the dark variant after switching to light (tested).
+      setini "$cfg/gtk-3.0/settings.ini" gtk-application-prefer-dark-theme 0
 
       # GTK4: follow color-scheme from the portal. A theme name or prefer-dark key here
       # would pin every GTK4 app (and makes libadwaita warn).
