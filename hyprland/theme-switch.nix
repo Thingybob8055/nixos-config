@@ -75,6 +75,11 @@ let
         if [ -L "$cfg/gtk-4.0/$f" ]; then rm -f "$cfg/gtk-4.0/$f"; fi
       done
 
+      # Hyprland group tabs: recolour live (ThemeGroupTabs is defined in hyprland.lua).
+      if command -v hyprctl >/dev/null; then
+        hyprctl eval "ThemeGroupTabs(\"$mode\")" >/dev/null 2>&1 || true
+      fi
+
       # Qt Flatpaks on the KDE runtime (VLC, OpenSCAD on 5.15; LeoCAD, Kdenlive, ... on
       # 6.x): Qt 5 has no light/dark support, and the runtime's default Breeze style
       # ignores it outside Plasma. Give each app the matching Adwaita style

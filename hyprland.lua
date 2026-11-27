@@ -176,6 +176,85 @@ hl.config({
     },
 })
 
+-----------------------
+---- GROUP TABS -------
+-----------------------
+-- COSMIC-style tab bar for window groups (SUPER+S): filled, rounded tabs with readable
+-- titles, Adwaita colours. keep_upper_gap = false: the tab bar starts where the window
+-- would, so the gap below the Noctalia bar stays the same as for ungrouped windows.
+hl.config({
+    group = {
+        groupbar = {
+            enabled            = true,
+            render_titles      = true,
+            gradients          = true,   -- draw each tab as a filled pill
+            height             = 26,
+            indicator_height   = 0,      -- no thin underline; the fill shows the active tab
+            gaps_in            = 4,      -- between tabs
+            gaps_out           = 4,      -- between tabs and the window
+            keep_upper_gap     = false,
+            font_family        = "Adwaita Sans",
+            font_size          = 11,
+            font_weight_active   = 600,
+            font_weight_inactive = 400,
+            text_padding       = 10,
+            gradient_rounding  = 10,     -- same as window rounding
+            gradient_round_only_edges = false,
+            rounding           = 10,
+            round_only_edges   = false,
+        },
+    },
+})
+
+-- Colours for light/dark (Adwaita): accent blue for the active tab, Adwaita orange for
+-- a locked group. Global so `theme-sync` can recolour live on a mode switch:
+--   hyprctl eval 'ThemeGroupTabs("light")'
+function ThemeGroupTabs(mode)
+    local c
+    if mode == "light" then
+        c = {
+            inactive = "rgba(dadadfff)", inactive_text = "rgba(000000cc)",
+            active   = "rgba(3584e4ff)", active_text   = "rgba(ffffffff)",
+            locked   = "rgba(e66100ff)", locked_inactive = "rgba(f3d3b8ff)",
+            locked_inactive_text = "rgba(000000cc)",
+        }
+    else
+        c = {
+            inactive = "rgba(3a3a3eff)", inactive_text = "rgba(ffffffb3)",
+            active   = "rgba(3584e4ff)", active_text   = "rgba(ffffffff)",
+            locked   = "rgba(c64600ff)", locked_inactive = "rgba(5a3a28ff)",
+            locked_inactive_text = "rgba(ffffffb3)",
+        }
+    end
+    hl.config({
+        group = {
+            groupbar = {
+                col = {
+                    active          = c.active,
+                    inactive        = c.inactive,
+                    locked_active   = c.locked,
+                    locked_inactive = c.locked_inactive,
+                },
+                text_color                 = c.active_text,
+                text_color_inactive        = c.inactive_text,
+                text_color_locked_active   = c.active_text,
+                text_color_locked_inactive = c.locked_inactive_text,
+            },
+        },
+    })
+end
+
+-- On (re)load, match the current mode.
+do
+    local mode = "dark"
+    local f = io.popen("gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null")
+    if f then
+        if (f:read("*a") or ""):find("light") then mode = "light" end
+        f:close()
+    end
+    ThemeGroupTabs(mode)
+end
+
 -- -- layerrule = blur on, match:namespace rofi
 -- hl.layer_rule({
 --     name  = "blur-rofi",
